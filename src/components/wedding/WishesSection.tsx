@@ -125,7 +125,7 @@ export function WishesSection({ className }: WishesSectionProps) {
               {wishes.map((wish, index) => (
                 <article
                   className={cn(
-                    "overflow-hidden rounded-[1.75rem] border border-[color:var(--border)] bg-[linear-gradient(145deg,_rgba(255,255,255,0.9),_rgba(248,241,229,0.92))] p-5 shadow-[0_20px_60px_rgba(86,66,32,0.08)] sm:p-6",
+                    "wedding-panel overflow-hidden rounded-[1.75rem] p-5 sm:p-6",
                     index === 0 ? "wedding-fade-in wedding-fade-in-delay-1" : "",
                     index === 1 ? "wedding-fade-in wedding-fade-in-delay-2" : "",
                     index >= 2 ? "wedding-fade-in wedding-fade-in-delay-3" : ""
@@ -143,7 +143,7 @@ export function WishesSection({ className }: WishesSectionProps) {
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-[color:var(--border)] bg-[linear-gradient(145deg,_rgba(255,255,255,0.92),_rgba(247,239,226,0.94))] p-6 shadow-[0_24px_80px_rgba(86,66,32,0.08)] sm:p-8 lg:p-10">
+          <div className="wedding-panel rounded-[2rem] p-6 sm:p-8 lg:p-10">
             <form noValidate onSubmit={handleSubmit}>
               <FormField error={errors.author} htmlFor="wish-author" label={NAME_LABEL}>
                 <input
@@ -176,7 +176,7 @@ export function WishesSection({ className }: WishesSectionProps) {
 
               <div className="mt-6 flex flex-wrap items-center gap-4">
                 <button
-                  className="inline-flex min-h-11 items-center justify-center rounded-full bg-[color:var(--primary)] px-6 py-3 text-sm font-medium text-[color:var(--primary-foreground)] transition hover:opacity-90 sm:min-h-12"
+                  className="wedding-button-primary inline-flex min-h-11 items-center justify-center rounded-full px-6 py-3 text-sm font-medium transition sm:min-h-12"
                   type="submit"
                 >
                   {SUBMIT_LABEL}
@@ -228,7 +228,7 @@ function FormField({ children, error, htmlFor, label }: FormFieldProps) {
 
 function inputClassName(hasError: boolean) {
   return cn(
-    "min-h-11 w-full rounded-[1.25rem] border bg-white/78 px-4 py-3 text-sm text-[color:var(--foreground)] outline-none transition placeholder:text-[color:var(--muted)]/65 focus:border-[color:var(--primary)] focus:ring-2 focus:ring-[color:var(--primary)]/20 sm:min-h-12",
+    "min-h-11 w-full rounded-[1.25rem] border bg-[rgba(255,255,255,0.8)] px-4 py-3 text-sm text-[color:var(--foreground)] outline-none transition placeholder:text-[color:var(--muted)]/65 focus:border-[color:var(--accent-rose)] focus:ring-2 focus:ring-[color:var(--accent-rose)]/18 sm:min-h-12",
     hasError ? "border-[color:#a14b3b]" : "border-[color:var(--border)]"
   );
 }

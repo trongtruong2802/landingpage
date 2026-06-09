@@ -75,7 +75,7 @@ export const weddingData: WeddingData = {
     description:
       "Minh Khang la nguoi tinh te, dien dam va luon danh su tran trong cho nhung dieu gian di nhat trong tinh yeu va gia dinh.",
     image: {
-      src: "/images/couple/groom.jpg",
+      src: "/images/couple/groom.svg",
       alt: "Chan dung chu re"
     }
   },
@@ -86,17 +86,18 @@ export const weddingData: WeddingData = {
     description:
       "Lan Anh mang den cam giac nhe nhang, am ap va thanh lich, nhu cach co ay luon cham chut cho moi khoanh khac dang nho trong cuoc song.",
     image: {
-      src: "/images/couple/bride.jpg",
+      src: "/images/couple/bride.svg",
       alt: "Chan dung co dau"
     }
   },
   weddingDate: {
-    iso: "2026-12-21",
-    display: "Chu Nhat, 21 thang 12 nam 2026",
+    iso: "2026-12-21T11:00:00+07:00",
+    display:
+      "\u0054\u0068\u1ee9\u0020\u0048\u0061\u0069\u002c\u0020\u0032\u0031\u0020\u0074\u0068\u00e1\u006e\u0067\u0020\u0031\u0032\u0020\u006e\u0103\u006d\u0020\u0032\u0030\u0032\u0036",
     lunar: "11 thang 11 nam Binh Ngo"
   },
   coverImage: {
-    src: "/images/cover/wedding-cover.jpg",
+    src: "/images/cover/wedding-cover.svg",
     alt: "Anh bia landing page dam cuoi cua Lan Anh va Minh Khang"
   },
   loveStory: [
@@ -106,7 +107,7 @@ export const weddingData: WeddingData = {
       description:
         "Chung minh gap nhau trong mot buoi ca phe nho sau gio lam. Tu cau chao hoi rat binh thuong, ca hai bat dau noi chuyen nhieu hon mong doi.",
       image: {
-        src: "/images/story/story-01.jpg",
+        src: "/images/story/story-placeholder.svg",
         alt: "Lan dau gap nhau trong mot khong gian am cung"
       }
     },
@@ -116,7 +117,7 @@ export const weddingData: WeddingData = {
       description:
         "Sau nhieu hanh trinh nho, nhung chuyen di ngan va nhung ngay ban ron, chung minh hoc cach lang nghe, chia se va luon chon nhau.",
       image: {
-        src: "/images/story/story-02.jpg",
+        src: "/images/story/story-placeholder.svg",
         alt: "Cap doi dong hanh trong nhung chuyen di va ky niem"
       }
     },
@@ -129,22 +130,22 @@ export const weddingData: WeddingData = {
   ],
   album: [
     {
-      src: "/images/album/album-01.jpg",
+      src: "/images/album/album-placeholder.svg",
       alt: "Cap doi di dao trong khu vuon xanh",
       caption: "Buoi chieu nhe nhang truoc ngay cuoi"
     },
     {
-      src: "/images/album/album-02.jpg",
+      src: "/images/album/album-placeholder.svg",
       alt: "Co dau va chu re mim cuoi cung nhau",
       caption: "Khoanh khac tu nhien va am ap"
     },
     {
-      src: "/images/album/album-03.jpg",
+      src: "/images/album/album-placeholder.svg",
       alt: "Cap doi nam tay trong concept pre-wedding",
       caption: "Mot chut lang man giua thanh pho"
     },
     {
-      src: "/images/album/album-04.jpg",
+      src: "/images/album/album-placeholder.svg",
       alt: "Chan dung co dau chu re voi background toi gian",
       caption: "Bo anh co the thay bang asset that trong public/images"
     }
@@ -187,13 +188,13 @@ export const weddingData: WeddingData = {
   mapsDirectionsUrl:
     "https://www.google.com/maps/dir/?api=1&destination=88+Song+Hanh%2C+Thu+Duc%2C+TP.+Ho+Chi+Minh",
   mapsEmbedUrl:
-    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.123456789!2d106.7523456!3d10.8012345!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317527a1example%3A0x123456789abcdef!2sMaison%20de%20Charme!5e0!3m2!1svi!2svn!4v1790000000000!5m2!1svi!2svn",
+    "https://www.google.com/maps?q=88+Song+Hanh%2C+Thu+Duc%2C+TP.+Ho+Chi+Minh&z=15&output=embed",
   bankQr: {
     bankName: "Techcombank",
     accountName: "Daren",
     accountNumber: "83883888888",
     qrImage: {
-      src: "/images/qr/bank-qr.png",
+      src: "/images/qr/bank-qr.svg",
       alt: "Ma QR ngan hang mung cuoi"
     }
   },

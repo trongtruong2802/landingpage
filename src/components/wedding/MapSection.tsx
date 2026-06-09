@@ -23,7 +23,7 @@ export function MapSection({
   return (
     <section className={cn("relative py-16 sm:py-20 lg:py-24", className)} id="map-section">
       <Container>
-        <div className="overflow-hidden rounded-[1.75rem] border border-[color:var(--border)] bg-[linear-gradient(145deg,_rgba(255,255,255,0.92),_rgba(247,239,226,0.94))] shadow-[0_24px_80px_rgba(86,66,32,0.08)] sm:rounded-[2rem]">
+        <div className="wedding-panel overflow-hidden rounded-[1.75rem] sm:rounded-[2rem]">
           <div className="grid gap-0 lg:grid-cols-[0.92fr_1.08fr]">
             <div className="flex flex-col justify-between p-6 sm:p-8 lg:p-10">
               <div>
@@ -40,7 +40,7 @@ export function MapSection({
 
               <div className="mt-8">
                 <a
-                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-[color:var(--border)] bg-white/85 px-5 py-3 text-sm font-medium text-[color:var(--foreground)] transition hover:-translate-y-0.5 hover:border-[color:var(--primary)] hover:text-[color:var(--primary)] sm:min-h-12"
+                  className="wedding-button-secondary inline-flex min-h-11 items-center justify-center rounded-full px-5 py-3 text-sm font-medium transition sm:min-h-12"
                   href={weddingData.mapsDirectionsUrl}
                   rel="noreferrer"
                   target="_blank"
@@ -51,7 +51,7 @@ export function MapSection({
             </div>
 
             <div className="p-3 sm:p-4">
-              <div className="overflow-hidden rounded-[1.6rem] border border-[color:var(--border)] bg-white">
+              <div className="wedding-panel-soft overflow-hidden rounded-[1.6rem]">
                 <iframe
                   className="aspect-[4/3] w-full sm:aspect-[16/10] lg:aspect-auto lg:h-full lg:min-h-[30rem]"
                   loading="lazy"

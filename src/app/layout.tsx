@@ -15,9 +15,9 @@ export const metadata: Metadata = {
   description: siteDescription,
   applicationName: "Wedding Landing Page",
   keywords: [
+    "romantic luxury wedding",
     "thiep cuoi online",
     "wedding landing page",
-    "next.js app router",
     "static wedding website",
     "wedding invitation"
   ],

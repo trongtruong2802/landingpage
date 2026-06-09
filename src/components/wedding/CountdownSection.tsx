@@ -7,6 +7,8 @@ import { cn } from "@/lib/cn";
 
 const CELEBRATION_TEXT =
   "\u004e\u0067\u00e0\u0079\u0020\u0068\u1ea1\u006e\u0068\u0020\u0070\u0068\u00fa\u0063\u0020\u0111\u00e3\u0020\u0111\u1ebf\u006e";
+const EMOTIONAL_LEAD_TEXT =
+  "\u0043\u00f9\u006e\u0067\u0020\u0111\u1ebf\u006d\u0020\u006e\u0067\u01b0\u1ee3\u0063\u0020\u0111\u1ebf\u006e\u0020\u006e\u0067\u00e0\u0079\u0020\u0063\u0068\u00fa\u006e\u0067\u0020\u006d\u00ec\u006e\u0068\u0020\u0076\u1ec1\u0020\u0063\u0068\u0075\u006e\u0067\u0020\u006d\u1ed9\u0074\u0020\u006e\u0068\u00e0";
 const DEFAULT_TITLE =
   "\u0110\u1ebf\u006d\u0020\u006e\u0067\u01b0\u1ee3\u0063\u0020\u0111\u1ebf\u006e\u0020\u006e\u0067\u00e0\u0079\u0020\u0074\u0068\u00e0\u006e\u0068\u0020\u0068\u00f4\u006e";
 const DEFAULT_SUBTITLE =
@@ -30,6 +32,7 @@ type CountdownState = {
 export type CountdownSectionProps = {
   celebrationText?: string;
   className?: string;
+  leadText?: string;
   targetDate: string;
   targetDateLabel?: string;
   title?: string;
@@ -47,6 +50,7 @@ const emptyCountdown: CountdownState = {
 export function CountdownSection({
   celebrationText = CELEBRATION_TEXT,
   className,
+  leadText = EMOTIONAL_LEAD_TEXT,
   targetDate,
   targetDateLabel,
   title = DEFAULT_TITLE,
@@ -97,16 +101,21 @@ export function CountdownSection({
   return (
     <section className={cn("relative py-16 sm:py-20 lg:py-24", className)} id="countdown">
       <Container>
-        <div className="relative overflow-hidden rounded-[1.75rem] border border-[color:var(--border)] bg-[linear-gradient(145deg,_rgba(255,255,255,0.92),_rgba(246,236,216,0.95))] p-5 shadow-[0_30px_90px_rgba(86,66,32,0.08)] sm:rounded-[2.25rem] sm:p-8 lg:p-12">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(205,176,105,0.18),_transparent_48%)]" />
+        <div className="relative overflow-hidden rounded-[1.9rem] border border-[color:var(--border)] bg-[linear-gradient(145deg,rgba(255,252,247,0.96),rgba(246,232,214,0.94))] p-5 shadow-[0_34px_90px_rgba(125,87,79,0.1)] sm:rounded-[2.35rem] sm:p-8 lg:p-12">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(199,165,109,0.18),_transparent_48%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_24%,rgba(188,138,148,0.12),transparent_24%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.14),rgba(255,255,255,0))]" />
           <div className="pointer-events-none absolute right-0 top-0 h-40 w-40 rounded-full bg-[radial-gradient(circle,_rgba(255,255,255,0.45),_transparent_66%)] blur-2xl" />
 
           <div className="relative">
             <div className="mx-auto max-w-3xl text-center">
-              <p className="wedding-fade-in wedding-fade-in-delay-1 text-[0.68rem] uppercase tracking-[0.4em] text-[color:var(--primary)]">
+              <p className="wedding-fade-in wedding-fade-in-delay-1 text-[0.68rem] uppercase tracking-[0.4em] text-[color:var(--accent-rose-deep)]">
                 Countdown
               </p>
-              <h2 className="wedding-fade-in wedding-fade-in-delay-2 mt-4 font-display text-[2rem] leading-tight text-balance text-[color:var(--foreground)] sm:text-5xl">
+              <p className="wedding-fade-in wedding-fade-in-delay-2 mt-4 font-display text-lg italic leading-8 text-[color:var(--foreground)]/88 sm:text-[1.45rem] sm:leading-9">
+                {leadText}
+              </p>
+              <h2 className="wedding-fade-in wedding-fade-in-delay-2 mt-5 font-display text-[2rem] leading-tight text-balance text-[color:var(--foreground)] sm:text-5xl">
                 {title}
               </h2>
               <p className="wedding-fade-in wedding-fade-in-delay-3 mt-4 text-sm leading-7 text-[color:var(--muted)] sm:text-base">
@@ -120,7 +129,7 @@ export function CountdownSection({
             </div>
 
             {hasMounted && countdown.hasElapsed ? (
-              <div className="wedding-fade-in wedding-fade-in-delay-3 mt-8 rounded-[1.5rem] border border-[color:var(--border)] bg-white/75 px-5 py-10 text-center backdrop-blur-sm sm:px-8">
+              <div className="wedding-fade-in wedding-fade-in-delay-3 mt-8 rounded-[1.6rem] border border-white/38 bg-[rgba(255,255,255,0.46)] px-5 py-10 text-center shadow-[0_22px_60px_rgba(125,87,79,0.1)] backdrop-blur-xl sm:px-8">
                 <p className="font-display text-[2rem] text-[color:var(--foreground)] sm:text-5xl">
                   {celebrationText}
                 </p>
@@ -134,17 +143,17 @@ export function CountdownSection({
                 {displayUnits.map((unit, index) => (
                   <div
                     className={cn(
-                      "wedding-fade-in rounded-[1.35rem] border border-[color:var(--border)] bg-white/78 px-3 py-5 text-center backdrop-blur-sm sm:rounded-[1.6rem] sm:px-5 sm:py-8",
+                      "wedding-fade-in rounded-[1.4rem] border border-white/42 bg-[linear-gradient(180deg,rgba(255,255,255,0.48),rgba(255,255,255,0.24))] px-3 py-5 text-center shadow-[0_20px_50px_rgba(125,87,79,0.1)] backdrop-blur-xl sm:rounded-[1.7rem] sm:px-5 sm:py-8",
                       index === 0 ? "wedding-fade-in-delay-1" : "",
                       index === 1 ? "wedding-fade-in-delay-2" : "",
                       index >= 2 ? "wedding-fade-in-delay-3" : ""
                     )}
                     key={unit.label}
                   >
-                    <p className="font-display text-4xl leading-none text-[color:var(--foreground)] sm:text-6xl">
+                    <p className="font-display text-4xl leading-none text-[color:var(--foreground)] drop-shadow-[0_8px_24px_rgba(255,255,255,0.28)] sm:text-6xl">
                       {unit.value}
                     </p>
-                    <p className="mt-2 text-[0.68rem] uppercase tracking-[0.28em] text-[color:var(--primary)] sm:mt-3 sm:tracking-[0.35em]">
+                    <p className="mt-2 text-[0.68rem] uppercase tracking-[0.28em] text-[color:var(--accent-rose-deep)] sm:mt-3 sm:tracking-[0.35em]">
                       {unit.label}
                     </p>
                   </div>

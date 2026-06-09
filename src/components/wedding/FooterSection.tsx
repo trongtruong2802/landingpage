@@ -19,24 +19,37 @@ export function FooterSection({
   const coupleNames = `${weddingData.bride.fullName} & ${weddingData.groom.fullName}`;
 
   return (
-    <footer className={cn("relative py-12 sm:py-16 lg:py-20", className)}>
+    <footer className={cn("relative overflow-hidden py-12 sm:py-16 lg:py-20", className)}>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-[radial-gradient(circle_at_top,rgba(199,165,109,0.18),transparent_70%)]"
+      />
+
       <Container>
-        <div className="rounded-[2rem] border border-[color:var(--border)] bg-[linear-gradient(145deg,_rgba(255,255,255,0.92),_rgba(247,239,226,0.9))] px-6 py-10 text-center shadow-[0_20px_70px_rgba(86,66,32,0.08)] sm:px-10 sm:py-12">
-          <p className="wedding-fade-in wedding-fade-in-delay-1 text-[0.68rem] uppercase tracking-[0.4em] text-[color:var(--primary)]">
+        <div className="mx-auto max-w-4xl text-center">
+          <div className="mx-auto h-px w-28 bg-[linear-gradient(90deg,transparent,rgba(199,165,109,0.82),transparent)] sm:w-36" />
+
+          <p className="mt-6 text-[0.68rem] uppercase tracking-[0.42em] text-[color:var(--accent-rose-deep)]">
             {MADE_WITH_LOVE}
           </p>
 
-          <h2 className="wedding-fade-in wedding-fade-in-delay-2 mt-4 font-display text-[2rem] leading-tight text-balance text-[color:var(--foreground)] sm:text-5xl">
+          <h2 className="mt-5 font-script text-[3.2rem] leading-[0.84] text-balance text-[color:var(--foreground)] sm:text-[4.5rem] lg:text-[5.6rem]">
             {coupleNames}
           </h2>
 
-          <p className="wedding-fade-in wedding-fade-in-delay-3 mt-4 mx-auto max-w-2xl text-sm leading-7 text-[color:var(--muted)] sm:text-base">
+          <div className="mx-auto mt-5 h-px w-20 bg-[linear-gradient(90deg,transparent,rgba(199,165,109,0.72),transparent)]" />
+
+          <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-[color:var(--muted)] sm:text-base">
             {thankYouMessage}
           </p>
 
-          <div className="mt-8 inline-flex rounded-full border border-[color:var(--border)] bg-white/80 px-5 py-3 text-sm text-[color:var(--foreground)]">
+          <p className="mt-6 font-display text-lg tracking-[0.08em] text-[color:var(--foreground)] sm:text-xl">
             {weddingData.weddingDate.display}
-          </div>
+          </p>
+
+          <p className="mt-4 text-sm italic text-[color:var(--primary)]/88">
+            {MADE_WITH_LOVE}
+          </p>
         </div>
       </Container>
     </footer>

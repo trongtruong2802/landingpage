@@ -1,6 +1,5 @@
-import Image from "next/image";
-
 import { Container } from "@/components/ui/container";
+import { SafeImage } from "@/components/ui/SafeImage";
 import { cn } from "@/lib/cn";
 
 export type CouplePerson = {
@@ -26,6 +25,8 @@ const DEFAULT_EYEBROW = "The Couple";
 const DEFAULT_TITLE = "Hai nguoi, mot cau chuyen, mot ngay dac biet";
 const DEFAULT_SUBTITLE =
   "Section nay duoc thiet ke nhe nhang va thanh lich de ton len hinh anh, ten goi va vai dong gioi thieu ngan gon cua co dau va chu re.";
+const BRIDE_FALLBACK_IMAGE = "/images/couple/bride.svg";
+const GROOM_FALLBACK_IMAGE = "/images/couple/groom.svg";
 
 export function CoupleSection({
   bride,
@@ -65,29 +66,35 @@ type PersonCardProps = {
 };
 
 function PersonCard({ className, person }: PersonCardProps) {
+  const fallbackSrc = person.role.toLowerCase().includes("re")
+    ? GROOM_FALLBACK_IMAGE
+    : BRIDE_FALLBACK_IMAGE;
+
   return (
     <article
       className={cn(
-        "wedding-fade-in overflow-hidden rounded-[2rem] border border-[color:var(--border)] bg-[linear-gradient(145deg,_rgba(255,255,255,0.9),_rgba(248,241,229,0.92))] shadow-[0_24px_80px_rgba(86,66,32,0.08)]",
+        "wedding-panel wedding-fade-in overflow-hidden rounded-[2rem]",
         className
       )}
     >
       <div className="relative aspect-[4/5] overflow-hidden">
-        <Image
+        <SafeImage
           alt={person.image.alt}
-          className="object-cover object-center"
+          className="scale-[1.01] object-cover object-center"
+          fallbackSrc={fallbackSrc}
           fill
           sizes="(min-width: 1024px) 40vw, 100vw"
           src={person.image.src}
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(26,18,11,0.08)_0%,rgba(26,18,11,0)_48%,rgba(26,18,11,0.32)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(45,28,26,0.06)_0%,rgba(45,28,26,0)_48%,rgba(45,28,26,0.28)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(188,138,148,0.14),transparent_30%)]" />
       </div>
 
       <div className="p-5 sm:p-8">
-        <p className="text-[0.68rem] uppercase tracking-[0.38em] text-[color:var(--primary)]">
+        <p className="text-[0.68rem] uppercase tracking-[0.38em] text-[color:var(--accent-rose-deep)]">
           {person.role}
         </p>
-        <h3 className="mt-4 font-display text-[2rem] text-[color:var(--foreground)] sm:text-5xl">
+        <h3 className="mt-4 font-script text-[3rem] leading-[0.84] text-[color:var(--foreground)] sm:text-[4.4rem]">
           {person.name}
         </h3>
         <p className="mt-5 text-sm leading-7 text-[color:var(--muted)] sm:text-base">
