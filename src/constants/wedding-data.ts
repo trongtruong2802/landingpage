@@ -35,9 +35,9 @@ export type WeddingEvent = {
   date: string;
   description?: string;
   mapUrl?: string;
+  time: string;
   title: string;
   type: "ceremony" | "reception" | "after-party";
-  time: string;
   venue: string;
 };
 
@@ -69,22 +69,22 @@ export type WeddingData = {
 
 export const weddingData: WeddingData = {
   groom: {
-    fullName: "Cá Mập",
-    nickname: "Mập",
+    fullName: "\u0043\u00e1\u0020\u004d\u1ead\u0070",
+    nickname: "\u004d\u1ead\u0070",
     role: "Chu re",
     description:
-      "Minh Khang la nguoi tinh te, dien dam va luon danh su tran trong cho nhung dieu gian di nhat trong tinh yeu va gia dinh.",
+      "\u0043\u00e1\u0020\u004d\u1ead\u0070\u0020\u006c\u00e0\u0020\u006e\u0067\u01b0\u1eddi\u0020\u0074\u0069\u006e\u0068\u0020\u0074\u1ebf\u002c\u0020\u0111\u0069\u1ec1\u006d\u0020\u0111\u1ea1\u006d\u0020\u0076\u00e0\u0020\u006c\u0075\u00f4\u006e\u0020\u0064\u00e0\u006e\u0068\u0020\u0073\u1ef1\u0020\u0074\u0072\u00e2\u006e\u0020\u0074\u0072\u1ecd\u006e\u0067\u0020\u0063\u0068\u006f\u0020\u006e\u0068\u1eef\u006e\u0067\u0020\u0111\u0069\u1ec1\u0075\u0020\u0067\u0069\u1ea3\u006e\u0020\u0064\u1ecb\u0020\u006e\u0068\u1ea5\u0074\u0020\u0074\u0072\u006f\u006e\u0067\u0020\u0074\u00ec\u006e\u0068\u0020\u0079\u00ea\u0075\u0020\u0076\u00e0\u0020\u0067\u0069\u0061\u0020\u0111\u00ec\u006e\u0068\u002e",
     image: {
       src: "/images/couple/groom.svg",
       alt: "Chan dung chu re"
     }
   },
   bride: {
-    fullName: "Cá Đuối",
-    nickname: "Đuối",
+    fullName: "\u0043\u00e1\u0020\u0110\u0075\u1ed1\u0069",
+    nickname: "\u0110\u0075\u1ed1\u0069",
     role: "Co dau",
     description:
-      "Lan Anh mang den cam giac nhe nhang, am ap va thanh lich, nhu cach co ay luon cham chut cho moi khoanh khac dang nho trong cuoc song.",
+      "\u0043\u00e1\u0020\u0110\u0075\u1ed1\u0069\u0020\u006d\u0061\u006e\u0067\u0020\u0111\u1ebf\u006e\u0020\u0063\u1ea3\u006d\u0020\u0067\u0069\u00e1\u0063\u0020\u006e\u0068\u1eb9\u0020\u006e\u0068\u00e0\u006e\u0067\u002c\u0020\u1ea5\u006d\u0020\u00e1\u0070\u0020\u0076\u00e0\u0020\u0074\u0068\u0061\u006e\u0068\u0020\u006c\u1ecb\u0063\u0068\u002c\u0020\u006e\u0068\u01b0\u0020\u0063\u00e1\u0063\u0068\u0020\u0063\u00f4\u0020\u1ea5\u0079\u0020\u006c\u0075\u00f4\u006e\u0020\u0063\u0068\u0103\u006d\u0020\u0063\u0068\u00fa\u0074\u0020\u0063\u0068\u006f\u0020\u006d\u1ed7\u0069\u0020\u006b\u0068\u006f\u1ea3\u006e\u0068\u0020\u006b\u0068\u1eaf\u0063\u0020\u0111\u00e1\u006e\u0067\u0020\u006e\u0068\u1edb\u0020\u0074\u0072\u006f\u006e\u0067\u0020\u0063\u0075\u1ed9\u0063\u0020\u0073\u1ed1\u006e\u0067\u002e",
     image: {
       src: "/images/couple/bride.svg",
       alt: "Chan dung co dau"
@@ -98,7 +98,8 @@ export const weddingData: WeddingData = {
   },
   coverImage: {
     src: "/images/cover/wedding-cover.svg",
-    alt: "Anh bia landing page dam cuoi cua Lan Anh va Minh Khang"
+    alt:
+      "\u1ea2\u006e\u0068\u0020\u0062\u00ec\u0061\u0020\u006c\u0061\u006e\u0064\u0069\u006e\u0067\u0020\u0070\u0061\u0067\u0065\u0020\u0111\u00e1\u006d\u0020\u0063\u01b0\u1edb\u0069\u0020\u0063\u1ee7\u0061\u0020\u0043\u00e1\u0020\u0110\u0075\u1ed1\u0069\u0020\u0076\u00e0\u0020\u0043\u00e1\u0020\u004d\u1ead\u0070"
   },
   loveStory: [
     {
