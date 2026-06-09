@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" role="img" aria-labelledby="title desc">
+  <title id="title">Wedding album placeholder</title>
+  <desc id="desc">Placeholder image for wedding gallery items.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fffaf3" />
+      <stop offset="100%" stop-color="#e7d1a7" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="30%" r="42%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="1500" fill="url(#bg)" />
+  <rect width="1200" height="1500" fill="url(#glow)" />
+  <rect x="146" y="158" width="908" height="1184" rx="56" fill="#fcf4e6" stroke="#b28b43" stroke-opacity="0.85" stroke-width="5" />
+  <path d="M246 1012c130-162 260-242 388-242 160 0 236 96 358 96 66 0 126-22 200-72" fill="none" stroke="#c2a165" stroke-width="6" stroke-linecap="round" />
+  <circle cx="396" cy="520" r="78" fill="#f3e2c3" stroke="#b28b43" stroke-width="4" />
+  <circle cx="572" cy="520" r="78" fill="#f3e2c3" stroke="#b28b43" stroke-width="4" />
+  <path d="M396 610c44 58 80 84 154 124 72-40 110-66 154-124" fill="none" stroke="#b28b43" stroke-width="5" stroke-linecap="round" />
+  <text x="600" y="1246" fill="#6d5630" font-family="Georgia, 'Times New Roman', serif" font-size="64" text-anchor="middle">Album Placeholder</text>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Bride portrait placeholder</title>
+  <desc id="desc">Placeholder portrait for the bride section.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fffaf3" />
+      <stop offset="100%" stop-color="#ead8bc" />
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1200" fill="url(#bg)" />
+  <circle cx="450" cy="380" r="168" fill="#f7ebd6" stroke="#c7a15f" stroke-width="3" />
+  <path d="M268 976c44-202 150-304 182-304h2c34 0 142 102 188 304" fill="#fdf6ea" stroke="#c7a15f" stroke-width="3" />
+  <path d="M336 316c34-88 186-122 246 0" fill="none" stroke="#c7a15f" stroke-width="20" stroke-linecap="round" />
+  <path d="M356 444c58 38 130 38 188 0" fill="none" stroke="#c7a15f" stroke-width="4" stroke-linecap="round" />
+  <text x="450" y="1040" fill="#7e6637" font-family="Georgia, 'Times New Roman', serif" font-size="58" text-anchor="middle">Bride Portrait</text>
+</svg>
