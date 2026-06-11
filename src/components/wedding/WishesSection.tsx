@@ -4,11 +4,10 @@ import type { ChangeEvent, ReactNode } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Container } from "@/components/ui/container";
-import { weddingData } from "@/constants/wedding-data";
 import { cn } from "@/lib/cn";
 
 // ── Config ────────────────────────────────────────────────────────────────────
-const WISHES_API_URL = ""; // << Dán URL Apps Script vào đây
+const WISHES_API_URL = "https://script.google.com/macros/s/AKfycbzhgC-cuuM2A01DUc3aYtkEhZcdcLTgrIw3HpARsPG7Z7exWVsoTwge-iiYSOJo-uHTkQ/exec"; // << Dán URL Apps Script vào đây
 const FEED_HEIGHT_DESKTOP = "520px";
 const FEED_HEIGHT_MOBILE  = "360px";
 
@@ -46,9 +45,7 @@ function makeId() {
 export type WishesSectionProps = { className?: string };
 
 export function WishesSection({ className }: WishesSectionProps) {
-  const [wishes, setWishes] = useState<Wish[]>(() =>
-    weddingData.sampleWishes.map((w, i) => ({ ...w, id: `seed-${i}` }))
-  );
+  const [wishes, setWishes] = useState<Wish[]>([]);
   const [fetchState, setFetchState] = useState<FetchState>(
     WISHES_API_URL ? "loading" : "idle"
   );
@@ -433,4 +430,5 @@ function fieldCls(hasError: boolean) {
     hasError ? "border-[#c0614f]" : "border-[rgba(199,165,109,0.20)]"
   );
 }
+
 
