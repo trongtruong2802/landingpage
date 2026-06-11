@@ -1,300 +1,199 @@
 "use client";
 
-import type { ChangeEvent, FormEvent, ReactNode } from "react";
-import { useState } from "react";
+import type { ChangeEvent, ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Container } from "@/components/ui/container";
 import { cn } from "@/lib/cn";
 
-const SECTION_EYEBROW = "RSVP";
-const SECTION_TITLE =
-  "\u0058\u00e1\u0063\u0020\u006e\u0068\u1ead\u006e\u0020\u0074\u0068\u0061\u006d\u0020\u0064\u1ef1";
-const SECTION_SUBTITLE =
-  "\u0046\u006f\u0072\u006d\u0020\u006e\u00e0\u0079\u0020\u0063\u0068\u1ec9\u0020\u006d\u00f4\u0020\u0070\u0068\u1ecf\u006e\u0067\u0020\u0076\u0069\u1ec7\u0063\u0020\u0078\u00e1\u0063\u0020\u006e\u0068\u1ead\u006e\u0020\u0074\u0068\u0061\u006d\u0020\u0064\u1ef1\u002e\u0020\u004b\u0068\u00f4\u006e\u0067\u0020\u0063\u00f3\u0020\u0041\u0050\u0049\u0020\u0111\u01b0\u1ee3\u0063\u0020\u0067\u1ecdi\u002c\u0020\u0064\u1eef\u0020\u006c\u0069\u1ec7\u0075\u0020\u0073\u1ebd\u0020\u0111\u01b0\u1ee3\u0063\u0020\u0069\u006e\u0020\u0072\u0061\u0020\u0063\u006f\u006e\u0073\u006f\u006c\u0065\u0020\u0076\u00e0\u0020\u0068\u0069\u1ec3\u006e\u0020\u0074\u0068\u1ecb\u0020\u0074\u0068\u00f4\u006e\u0067\u0020\u0062\u00e1\u006f\u0020\u0074\u0068\u00e0\u006e\u0068\u0020\u0063\u00f4\u006e\u0067\u002e";
-const SUCCESS_MESSAGE =
-  "\u0043\u1ea3\u006d\u0020\u01a1\u006e\u0020\u0062\u1ea1\u006e\u0020\u0111\u00e3\u0020\u0078\u00e1\u0063\u0020\u006e\u0068\u1ead\u006e\u002e\u0020\u0043\u0068\u00fa\u006e\u0067\u0020\u006d\u00ec\u006e\u0068\u0020\u0072\u1ea5\u0074\u0020\u0076\u0075\u0069\u0020\u006b\u0068\u0069\u0020\u006e\u0068\u1ead\u006e\u0020\u0111\u01b0\u1ee3\u0063\u0020\u0070\u0068\u1ea3\u006e\u0020\u0068\u1ed3\u0069\u0020\u0063\u1ee7\u0061\u0020\u0062\u1ea1\u006e\u002e";
-const HONOR_MESSAGE =
-  "\u0053\u1ef1\u0020\u0068\u0069\u1ec7\u006e\u0020\u0064\u0069\u1ec7\u006e\u0020\u0063\u1ee7\u0061\u0020\u0062\u1ea1\u006e\u0020\u006c\u00e0\u0020\u006e\u0069\u1ec1\u006d\u0020\u0076\u0069\u006e\u0068\u0020\u0068\u1ea1\u006e\u0068\u0020\u0063\u1ee7\u0061\u0020\u0063\u0068\u00fa\u006e\u0067\u0020\u0074\u00f4\u0069\u002e";
-const SUBMIT_LABEL =
-  "\u0047\u1eed\u0069\u0020\u0078\u00e1\u0063\u0020\u006e\u0068\u1ead\u006e";
-const FULL_NAME_LABEL = "\u0048\u1ecd\u0020\u0074\u00ea\u006e";
-const FULL_NAME_PLACEHOLDER =
-  "\u004e\u0068\u1ead\u0070\u0020\u0068\u1ecd\u0020\u0074\u00ea\u006e";
-const ATTENDANCE_YES =
-  "\u0043\u00f3\u002c\u0020\u0074\u00f4\u0069\u0020\u0073\u1ebd\u0020\u0074\u0068\u0061\u006d\u0020\u0064\u1ef1";
-const ATTENDANCE_NO =
-  "\u004b\u0068\u00f4\u006e\u0067\u002c\u0020\u0074\u00f4\u0069\u0020\u006b\u0068\u00f4\u006e\u0067\u0020\u0074\u0068\u1ec3\u0020\u0074\u0068\u0061\u006d\u0020\u0064\u1ef1";
-const PHONE_LABEL =
-  "\u0053\u1ed1\u0020\u0111\u0069\u1ec7\u006e\u0020\u0074\u0068\u006f\u1ea1\u0069";
-const PHONE_PLACEHOLDER =
-  "\u004e\u0068\u1ead\u0070\u0020\u0073\u1ed1\u0020\u0111\u0069\u1ec7\u006e\u0020\u0074\u0068\u006f\u1ea1\u0069";
-const GUEST_COUNT_LABEL =
-  "\u0053\u1ed1\u0020\u006c\u01b0\u1ee3\u006e\u0067\u0020\u006e\u0067\u01b0\u1eddi\u0020\u0074\u0068\u0061\u006d\u0020\u0064\u1ef1";
-const ATTENDANCE_GROUP_LABEL =
-  "\u0043\u00f3\u0020\u0074\u0068\u0061\u006d\u0020\u0064\u1ef1\u0020\u0068\u0061\u0079\u0020\u006b\u0068\u00f4\u006e\u0067";
-const MESSAGE_LABEL = "\u004c\u1eddi\u0020\u006e\u0068\u1eaf\u006e";
-const MESSAGE_PLACEHOLDER =
-  "\u0047\u1eed\u0069\u0020\u006d\u1ed9\u0074\u0020\u006c\u1eddi\u0020\u006e\u0068\u1eaf\u006e\u0020\u0111\u1ebf\u006e\u0020\u0063\u00f4\u0020\u0064\u00e2\u0075\u0020\u0076\u00e0\u0020\u0063\u0068\u00fa\u0020\u0072\u1ec3";
-const REQUIRED_NAME_ERROR =
-  "\u0056\u0075\u0069\u0020\u006c\u00f2\u006e\u0067\u0020\u006e\u0068\u1ead\u0070\u0020\u0068\u1ecd\u0020\u0074\u00ea\u006e\u002e";
-const REQUIRED_PHONE_ERROR =
-  "\u0056\u0075\u0069\u0020\u006c\u00f2\u006e\u0067\u0020\u006e\u0068\u1ead\u0070\u0020\u0073\u1ed1\u0020\u0111\u0069\u1ec7\u006e\u0020\u0074\u0068\u006f\u1ea1\u0069\u002e";
+// ── Cấu hình Google Sheets ────────────────────────────────────────────────────
+// Hướng dẫn kết nối Google Sheets:
+// 1. Tạo Google Sheet mới
+// 2. Vào Extensions > Apps Script
+// 3. Dán script từ /docs/google-apps-script.js
+// 4. Deploy > New deployment > Web app > Execute as Me > Anyone
+// 5. Copy URL và dán vào GOOGLE_SHEET_URL bên dưới
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzcljrDAnfLkM0JCc4iRao4tjSpai0_O-14ezgP-HaB-_3agycjx8Lau3Dvdo-ktlt_/exec"; // << Dán URL Apps Script vào đây
+
+// ── Types ─────────────────────────────────────────────────────────────────────
 
 type AttendanceValue = "yes" | "no";
 
-type RSVPFormValues = {
-  attendance: AttendanceValue;
+type Step1Values = {
   fullName: string;
-  guestCount: number;
-  message: string;
   phone: string;
+  attendance: AttendanceValue;
 };
 
-type RSVPFormErrors = {
-  fullName?: string;
-  phone?: string;
+type Step2Values = {
+  guestCount: number;
+  event: "bride" | "groom" | "both";
+  message: string;
 };
 
-const initialFormValues: RSVPFormValues = {
-  attendance: "yes",
-  fullName: "",
-  guestCount: 1,
-  message: "",
-  phone: ""
-};
+type FormErrors = Partial<Record<keyof Step1Values, string>>;
 
-export type RSVPSectionProps = {
-  className?: string;
-};
+// ── Component ─────────────────────────────────────────────────────────────────
+
+export type RSVPSectionProps = { className?: string };
 
 export function RSVPSection({ className }: RSVPSectionProps) {
-  const [formValues, setFormValues] = useState<RSVPFormValues>(initialFormValues);
-  const [errors, setErrors] = useState<RSVPFormErrors>({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [step, setStep] = useState<1 | 2>(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDone, setIsDone] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [visible, setVisible] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
-  const handleTextChange =
-    (field: "fullName" | "message" | "phone") =>
-    (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const value = event.target.value;
+  const [step1, setStep1] = useState<Step1Values>({
+    fullName: "",
+    phone: "",
+    attendance: "yes",
+  });
 
-      setFormValues((current) => ({
-        ...current,
-        [field]: value
-      }));
+  const [step2, setStep2] = useState<Step2Values>({
+    guestCount: 1,
+    event: "both",
+    message: "",
+  });
 
-      setErrors((current) => ({
-        ...current,
-        [field]: undefined
-      }));
-      setIsSubmitted(false);
-    };
+  // Scroll reveal
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
+      { threshold: 0.08 }
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
 
-  const handleAttendanceChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value as AttendanceValue;
-
-    setFormValues((current) => ({
-      ...current,
-      attendance: value
-    }));
-    setIsSubmitted(false);
-  };
-
-  const handleGuestCountChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setFormValues((current) => ({
-      ...current,
-      guestCount: Number(event.target.value)
-    }));
-    setIsSubmitted(false);
-  };
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const nextErrors: RSVPFormErrors = {};
-
-    if (!formValues.fullName.trim()) {
-      nextErrors.fullName = REQUIRED_NAME_ERROR;
+  // Validate bước 1
+  function validateStep1(): boolean {
+    const next: FormErrors = {};
+    if (!step1.fullName.trim()) next.fullName = "Vui lòng nhập họ tên.";
+    const phoneRaw = step1.phone.replace(/\s/g, "");
+    if (!phoneRaw) {
+      next.phone = "Vui lòng nhập số điện thoại.";
+    } else if (!/^(0|\+84)[3-9]\d{8}$/.test(phoneRaw)) {
+      next.phone = "Số điện thoại VN chưa đúng định dạng.";
     }
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  }
 
-    if (!formValues.phone.trim()) {
-      nextErrors.phone = REQUIRED_PHONE_ERROR;
-    }
+  function handleNext() {
+    if (validateStep1()) setStep(2);
+  }
 
-    setErrors(nextErrors);
-
-    if (Object.keys(nextErrors).length > 0) {
-      setIsSubmitted(false);
-      return;
-    }
-
+  async function handleSubmit() {
+    setIsSubmitting(true);
     const payload = {
-      ...formValues,
-      fullName: formValues.fullName.trim(),
-      message: formValues.message.trim(),
-      phone: formValues.phone.trim()
+      timestamp: new Date().toISOString(),
+      fullName: step1.fullName.trim(),
+      phone: step1.phone.trim(),
+      attendance: step1.attendance === "yes" ? "Có mặt" : "Vắng mặt",
+      guestCount: step1.attendance === "yes" ? step2.guestCount : 0,
+      event: step1.attendance === "yes"
+        ? ({ bride: "Nhà gái", groom: "Nhà trai", both: "Cả hai" }[step2.event])
+        : "—",
+      message: step2.message.trim(),
     };
 
-    console.log("RSVP submission", payload);
-    setIsSubmitted(true);
-  };
+    try {
+      if (GOOGLE_SHEET_URL) {
+        await fetch(GOOGLE_SHEET_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        // Dev mode: log to console
+        console.log("📋 RSVP payload:", payload);
+        await new Promise((r) => setTimeout(r, 800)); // simulate delay
+      }
+      setIsDone(true);
+    } catch {
+      setIsDone(true); // vẫn hiện success vì no-cors không throw lỗi thật
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
-    <section className={cn("relative py-16 sm:py-20 lg:py-24", className)} id="rsvp-section">
+    <section
+      className={cn("relative py-16 sm:py-20 lg:py-24", className)}
+      id="rsvp-section"
+      ref={sectionRef}
+    >
+      {/* Ambient */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -left-16 top-1/4 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(188,138,148,0.10),transparent_70%)] blur-3xl" />
+        <div className="absolute -right-16 bottom-1/4 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(199,165,109,0.10),transparent_70%)] blur-3xl" />
+      </div>
+
       <Container>
-        <div className="relative overflow-hidden rounded-[2rem] border border-[rgba(199,165,109,0.34)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(250,242,233,0.97))] shadow-[0_30px_80px_rgba(137,107,82,0.14)]">
-          <div
-            aria-hidden="true"
-            className="absolute inset-x-8 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(199,165,109,0.72),transparent)]"
-          />
-          <div
-            aria-hidden="true"
-            className="absolute -left-12 top-12 h-32 w-32 rounded-full bg-[rgba(211,176,146,0.12)] blur-3xl"
-          />
-          <div
-            aria-hidden="true"
-            className="absolute -bottom-12 right-0 h-40 w-40 rounded-full bg-[rgba(199,165,109,0.12)] blur-3xl"
-          />
+        <div
+          className={cn(
+            "transition-all duration-700 ease-out",
+            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          )}
+        >
+          {/* Header */}
+          <div className="mx-auto max-w-xl text-center">
+            <p className="text-[0.66rem] uppercase tracking-[0.44em] text-[color:var(--accent-rose-deep)]">
+              RSVP
+            </p>
+            <h2 className="mt-3 font-script text-[3rem] leading-tight text-[color:var(--foreground)] sm:text-[3.8rem]">
+              Xác nhận tham dự
+            </h2>
+            <p className="mt-2 text-sm leading-7 text-[color:var(--muted)]">
+              Sự hiện diện của bạn là món quà quý giá nhất với chúng mình.
+            </p>
+          </div>
 
-          <div className="grid gap-0 lg:grid-cols-[0.88fr_1.12fr]">
-            <div className="relative border-b border-[rgba(199,165,109,0.2)] bg-[linear-gradient(180deg,rgba(255,252,247,0.94),rgba(247,238,230,0.84))] p-6 sm:p-8 lg:border-b-0 lg:border-r lg:border-r-[rgba(199,165,109,0.2)] lg:p-10">
-              <p className="wedding-fade-in wedding-fade-in-delay-1 relative text-[0.68rem] uppercase tracking-[0.4em] text-[color:var(--primary)]">
-                {SECTION_EYEBROW}
-              </p>
-              <h2 className="wedding-fade-in wedding-fade-in-delay-2 relative mt-4 font-display text-[2rem] leading-tight text-balance text-[color:var(--foreground)] sm:text-5xl">
-                {SECTION_TITLE}
-              </h2>
-              <p className="wedding-fade-in wedding-fade-in-delay-3 relative mt-4 max-w-md text-sm leading-7 text-[color:var(--muted)] sm:text-base">
-                {SECTION_SUBTITLE}
-              </p>
+          {/* Card */}
+          <div className="mx-auto mt-10 max-w-lg overflow-hidden rounded-[2rem] border border-[rgba(199,165,109,0.30)] bg-[linear-gradient(160deg,rgba(255,255,255,0.99),rgba(252,243,237,0.97))] shadow-[0_32px_80px_rgba(125,87,79,0.13)]">
+            {/* Top shimmer line */}
+            <div className="h-px w-full bg-[linear-gradient(90deg,transparent,rgba(199,165,109,0.7),transparent)]" />
 
-              <div className="wedding-fade-in wedding-fade-in-delay-3 relative mt-8 rounded-[1.75rem] border border-[rgba(199,165,109,0.22)] bg-white/72 px-5 py-5 shadow-[0_18px_40px_rgba(154,121,98,0.08)] backdrop-blur-sm">
-                <div className="h-px w-16 bg-[linear-gradient(90deg,rgba(199,165,109,0.9),rgba(211,176,146,0.35))]" />
-                <p className="mt-4 font-display text-[1.35rem] leading-8 text-[color:var(--foreground)] sm:text-[1.5rem]">
-                  {HONOR_MESSAGE}
-                </p>
-              </div>
-
-              {isSubmitted ? (
-                <div
-                  aria-live="polite"
-                  className="relative mt-8 rounded-[1.5rem] border border-[rgba(199,165,109,0.18)] bg-[rgba(255,255,255,0.78)] px-5 py-4 text-sm leading-7 text-[color:var(--foreground)] shadow-[0_14px_30px_rgba(154,121,98,0.07)]"
-                  role="status"
-                >
-                  {SUCCESS_MESSAGE}
+            {isDone ? (
+              <SuccessScreen name={step1.fullName} />
+            ) : (
+              <>
+                {/* Step indicator */}
+                <div className="flex items-center gap-3 px-7 pt-7">
+                  <StepDot active={step >= 1} done={step > 1} label="1" />
+                  <div className="h-px flex-1 bg-[color:var(--border)]" />
+                  <StepDot active={step >= 2} done={false} label="2" />
                 </div>
-              ) : null}
-            </div>
 
-            <form className="relative p-6 sm:p-8 lg:p-10" noValidate onSubmit={handleSubmit}>
-              <div className="grid gap-5 sm:grid-cols-2">
-                <FormField
-                  error={errors.fullName}
-                  htmlFor="rsvp-full-name"
-                  label={FULL_NAME_LABEL}
-                >
-                  <input
-                    autoComplete="name"
-                    className={inputClassName(errors.fullName)}
-                    id="rsvp-full-name"
-                    name="fullName"
-                    onChange={handleTextChange("fullName")}
-                    placeholder={FULL_NAME_PLACEHOLDER}
-                    type="text"
-                    value={formValues.fullName}
-                  />
-                </FormField>
-
-                <FormField error={errors.phone} htmlFor="rsvp-phone" label={PHONE_LABEL}>
-                  <input
-                    autoComplete="tel"
-                    className={inputClassName(errors.phone)}
-                    id="rsvp-phone"
-                    inputMode="tel"
-                    name="phone"
-                    onChange={handleTextChange("phone")}
-                    placeholder={PHONE_PLACEHOLDER}
-                    type="tel"
-                    value={formValues.phone}
-                  />
-                </FormField>
-              </div>
-
-              <div className="mt-5">
-                <FormField htmlFor="rsvp-guest-count" label={GUEST_COUNT_LABEL}>
-                  <select
-                    className={inputClassName()}
-                    id="rsvp-guest-count"
-                    name="guestCount"
-                    onChange={handleGuestCountChange}
-                    value={formValues.guestCount}
-                  >
-                    {[1, 2, 3, 4, 5].map((count) => (
-                      <option key={count} value={count}>
-                        {count}
-                      </option>
-                    ))}
-                  </select>
-                </FormField>
-              </div>
-
-              <fieldset className="mt-5 rounded-[1.75rem] border border-[rgba(199,165,109,0.18)] bg-[rgba(255,252,247,0.82)] p-4 shadow-[0_16px_30px_rgba(154,121,98,0.06)] backdrop-blur-sm sm:p-5">
-                <legend className="px-2 text-[0.72rem] uppercase tracking-[0.28em] text-[color:var(--primary)]">
-                  {ATTENDANCE_GROUP_LABEL}
-                </legend>
-
-                <div className="mt-3 grid gap-3">
-                  <label className="flex cursor-pointer items-start gap-3 rounded-[1.3rem] border border-[rgba(199,165,109,0.18)] bg-white/85 px-4 py-4 transition hover:border-[color:var(--primary)] hover:shadow-[0_12px_24px_rgba(154,121,98,0.08)]">
-                    <input
-                      checked={formValues.attendance === "yes"}
-                      className="mt-1 h-4 w-4 accent-[color:var(--primary)]"
-                      name="attendance"
-                      onChange={handleAttendanceChange}
-                      type="radio"
-                      value="yes"
+                <div className="p-7 sm:p-8">
+                  {step === 1 ? (
+                    <Step1
+                      values={step1}
+                      errors={errors}
+                      onChange={(field, val) => {
+                        setStep1((prev) => ({ ...prev, [field]: val }));
+                        setErrors((prev) => ({ ...prev, [field]: undefined }));
+                      }}
+                      onNext={handleNext}
                     />
-                    <span className="text-sm leading-7 text-[color:var(--foreground)]">
-                      {ATTENDANCE_YES}
-                    </span>
-                  </label>
-
-                  <label className="flex cursor-pointer items-start gap-3 rounded-[1.3rem] border border-[rgba(199,165,109,0.18)] bg-white/85 px-4 py-4 transition hover:border-[color:var(--primary)] hover:shadow-[0_12px_24px_rgba(154,121,98,0.08)]">
-                    <input
-                      checked={formValues.attendance === "no"}
-                      className="mt-1 h-4 w-4 accent-[color:var(--primary)]"
-                      name="attendance"
-                      onChange={handleAttendanceChange}
-                      type="radio"
-                      value="no"
+                  ) : (
+                    <Step2
+                      values={step2}
+                      attendance={step1.attendance}
+                      isSubmitting={isSubmitting}
+                      onChange={(field, val) =>
+                        setStep2((prev) => ({ ...prev, [field]: val }))
+                      }
+                      onBack={() => setStep(1)}
+                      onSubmit={handleSubmit}
                     />
-                    <span className="text-sm leading-7 text-[color:var(--foreground)]">
-                      {ATTENDANCE_NO}
-                    </span>
-                  </label>
+                  )}
                 </div>
-              </fieldset>
-
-              <div className="mt-5">
-                <FormField htmlFor="rsvp-message" label={MESSAGE_LABEL}>
-                  <textarea
-                    className={cn(inputClassName(), "min-h-32 resize-y")}
-                    id="rsvp-message"
-                    name="message"
-                    onChange={handleTextChange("message")}
-                    placeholder={MESSAGE_PLACEHOLDER}
-                    value={formValues.message}
-                  />
-                </FormField>
-              </div>
-
-              <div className="mt-6">
-                <button
-                  className="wedding-button-primary inline-flex min-h-11 items-center justify-center rounded-full px-7 py-3 text-sm font-medium uppercase tracking-[0.14em] shadow-[0_18px_32px_rgba(171,137,89,0.24)] transition hover:-translate-y-0.5 sm:min-h-12"
-                  type="submit"
-                >
-                  {SUBMIT_LABEL}
-                </button>
-              </div>
-            </form>
+              </>
+            )}
           </div>
         </div>
       </Container>
@@ -302,35 +201,346 @@ export function RSVPSection({ className }: RSVPSectionProps) {
   );
 }
 
-type FormFieldProps = {
-  children: ReactNode;
-  error?: string;
-  htmlFor: string;
-  label: string;
-};
+// ── Step 1: Thông tin cơ bản ──────────────────────────────────────────────────
 
-function FormField({ children, error, htmlFor, label }: FormFieldProps) {
+function Step1({
+  values,
+  errors,
+  onChange,
+  onNext,
+}: {
+  values: Step1Values;
+  errors: FormErrors;
+  onChange: (field: keyof Step1Values, val: string) => void;
+  onNext: () => void;
+}) {
   return (
-    <div>
-      <label
-        className="block text-[0.72rem] uppercase tracking-[0.28em] text-[color:var(--primary)]"
-        htmlFor={htmlFor}
-      >
-        {label}
-      </label>
-      <div className="mt-3">{children}</div>
-      {error ? (
-        <p className="mt-2 text-sm text-[color:#a14b3b]" role="alert">
-          {error}
+    <div className="space-y-5">
+      <div>
+        <p className="font-display text-[1.4rem] text-[color:var(--foreground)]">Thông tin của bạn</p>
+        <p className="mt-1 text-sm text-[color:var(--muted)]">Bước 1 / 2 — Điền thông tin cơ bản</p>
+      </div>
+
+      <FormField label="Họ và tên" htmlFor="rsvp-name" error={errors.fullName}>
+        <input
+          id="rsvp-name"
+          type="text"
+          autoComplete="name"
+          placeholder="Nguyễn Văn A"
+          value={values.fullName}
+          onChange={(e) => onChange("fullName", e.target.value)}
+          className={inputCls(errors.fullName)}
+        />
+      </FormField>
+
+      <FormField label="Số điện thoại" htmlFor="rsvp-phone" error={errors.phone}>
+        <input
+          id="rsvp-phone"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          placeholder="09xxxxxxxx"
+          value={values.phone}
+          onChange={(e) => onChange("phone", e.target.value)}
+          className={inputCls(errors.phone)}
+        />
+      </FormField>
+
+      {/* Attendance toggle */}
+      <div>
+        <p className="mb-3 text-[0.72rem] uppercase tracking-[0.28em] text-[color:var(--primary)]">
+          Bạn có tham dự không?
         </p>
-      ) : null}
+        <div className="grid grid-cols-2 gap-3">
+          {(["yes", "no"] as const).map((val) => (
+            <label
+              key={val}
+              className={cn(
+                "flex cursor-pointer items-center gap-3 rounded-[1.2rem] border p-4 transition-all duration-200",
+                values.attendance === val
+                  ? "border-[color:var(--primary)] bg-[rgba(199,165,109,0.08)] shadow-[0_8px_24px_rgba(199,165,109,0.14)]"
+                  : "border-[color:var(--border)] bg-white/60 hover:border-[rgba(199,165,109,0.5)]"
+              )}
+            >
+              <input
+                type="radio"
+                name="attendance"
+                value={val}
+                checked={values.attendance === val}
+                onChange={(e) => onChange("attendance", e.target.value)}
+                className="sr-only"
+              />
+              <span
+                className={cn(
+                  "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
+                  values.attendance === val
+                    ? "border-[color:var(--primary)] bg-[color:var(--primary)]"
+                    : "border-[color:var(--border)]"
+                )}
+              >
+                {values.attendance === val && (
+                  <span className="h-2 w-2 rounded-full bg-white" />
+                )}
+              </span>
+              <span className="text-sm font-medium text-[color:var(--foreground)]">
+                {val === "yes" ? "✓  Có mặt" : "✗  Vắng mặt"}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={onNext}
+        className="wedding-button-primary inline-flex w-full items-center justify-center gap-2 rounded-full py-3.5 text-sm font-semibold tracking-[0.12em] transition hover:-translate-y-0.5"
+      >
+        Tiếp theo
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6" />
+        </svg>
+      </button>
     </div>
   );
 }
 
-function inputClassName(hasError?: string) {
+// ── Step 2: Chi tiết ──────────────────────────────────────────────────────────
+
+function Step2({
+  values,
+  attendance,
+  isSubmitting,
+  onChange,
+  onBack,
+  onSubmit,
+}: {
+  values: Step2Values;
+  attendance: AttendanceValue;
+  isSubmitting: boolean;
+  onChange: (field: keyof Step2Values, val: number | string) => void;
+  onBack: () => void;
+  onSubmit: () => void;
+}) {
+  const attending = attendance === "yes";
+
+  return (
+    <div className="space-y-5">
+      <div>
+        <p className="font-display text-[1.4rem] text-[color:var(--foreground)]">
+          {attending ? "Chi tiết tham dự" : "Lời nhắn"}
+        </p>
+        <p className="mt-1 text-sm text-[color:var(--muted)]">Bước 2 / 2 — Gần xong rồi!</p>
+      </div>
+
+      {attending && (
+        <>
+          {/* Guest count */}
+          <div>
+            <p className="mb-3 text-[0.72rem] uppercase tracking-[0.28em] text-[color:var(--primary)]">
+              Số người tham dự
+            </p>
+            <div className="flex items-center gap-4">
+              <button
+                type="button"
+                onClick={() => onChange("guestCount", Math.max(1, values.guestCount - 1))}
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--border)] bg-white text-lg text-[color:var(--foreground)] transition hover:border-[color:var(--primary)] hover:bg-[rgba(199,165,109,0.06)]"
+                aria-label="Giảm"
+              >−</button>
+              <span className="min-w-[2rem] text-center font-display text-[1.6rem] text-[color:var(--foreground)]">
+                {values.guestCount}
+              </span>
+              <button
+                type="button"
+                onClick={() => onChange("guestCount", Math.min(10, values.guestCount + 1))}
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--border)] bg-white text-lg text-[color:var(--foreground)] transition hover:border-[color:var(--primary)] hover:bg-[rgba(199,165,109,0.06)]"
+                aria-label="Tăng"
+              >+</button>
+              <span className="text-sm text-[color:var(--muted)]">người (kể cả bạn)</span>
+            </div>
+          </div>
+
+          {/* Event selection */}
+          <div>
+            <p className="mb-3 text-[0.72rem] uppercase tracking-[0.28em] text-[color:var(--primary)]">
+              Tham dự tiệc nào?
+            </p>
+            <div className="grid gap-2">
+              {([
+                { val: "bride", label: "🌸  Tiệc nhà gái — 21.12.2026 · 11:00" },
+                { val: "groom", label: "🕯  Tiệc nhà trai — 21.12.2026 · 18:00" },
+                { val: "both",  label: "✨  Cả hai tiệc" },
+              ] as const).map(({ val, label }) => (
+                <label
+                  key={val}
+                  className={cn(
+                    "flex cursor-pointer items-center gap-3 rounded-[1.1rem] border px-4 py-3 text-sm transition-all duration-200",
+                    values.event === val
+                      ? "border-[color:var(--primary)] bg-[rgba(199,165,109,0.07)] font-medium text-[color:var(--foreground)]"
+                      : "border-[color:var(--border)] bg-white/60 text-[color:var(--muted)] hover:border-[rgba(199,165,109,0.5)]"
+                  )}
+                >
+                  <input
+                    type="radio"
+                    name="event-pick"
+                    value={val}
+                    checked={values.event === val}
+                    onChange={() => onChange("event", val)}
+                    className="sr-only"
+                  />
+                  <span
+                    className={cn(
+                      "flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
+                      values.event === val ? "border-[color:var(--primary)] bg-[color:var(--primary)]" : "border-[color:var(--border)]"
+                    )}
+                  >
+                    {values.event === val && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
+                  </span>
+                  {label}
+                </label>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Message */}
+      <FormField label="Lời chúc (tùy chọn)" htmlFor="rsvp-message">
+        <textarea
+          id="rsvp-message"
+          rows={3}
+          placeholder={attending ? "Gửi một lời chúc đến cô dâu và chú rể…" : "Rất tiếc khi không thể đến, chúc hai bạn…"}
+          value={values.message}
+          onChange={(e: ChangeEvent<HTMLTextAreaElement>) => onChange("message", e.target.value)}
+          className={cn(inputCls(), "resize-none")}
+        />
+      </FormField>
+
+      {/* Buttons */}
+      <div className="flex gap-3">
+        <button
+          type="button"
+          onClick={onBack}
+          className="wedding-button-secondary inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-full border text-sm font-medium transition hover:-translate-y-0.5"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M19 12H5M11 6l-6 6 6 6" />
+          </svg>
+          Quay lại
+        </button>
+
+        <button
+          type="button"
+          onClick={onSubmit}
+          disabled={isSubmitting}
+          className="wedding-button-primary inline-flex h-12 flex-[2] items-center justify-center gap-2 rounded-full text-sm font-semibold tracking-[0.1em] transition hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed"
+        >
+          {isSubmitting ? (
+            <>
+              <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" strokeLinecap="round" />
+              </svg>
+              Đang gửi…
+            </>
+          ) : (
+            <>
+              Gửi xác nhận
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </>
+          )}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Success screen ────────────────────────────────────────────────────────────
+
+function SuccessScreen({ name }: { name: string }) {
+  return (
+    <div className="flex flex-col items-center py-10 px-8 text-center">
+      {/* Animated checkmark */}
+      <div className="relative flex h-20 w-20 items-center justify-center rounded-full border-2 border-[color:var(--primary)] bg-[rgba(199,165,109,0.08)]">
+        <svg className="h-9 w-9 text-[color:var(--primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M4 12.5l5.5 5.5L20 7" />
+        </svg>
+        <div className="absolute -inset-2 animate-ping rounded-full border border-[rgba(199,165,109,0.3)]" />
+      </div>
+
+      <h3 className="mt-6 font-script text-[2.2rem] leading-tight text-[color:var(--foreground)]">
+        Cảm ơn, {name.split(" ").pop()}!
+      </h3>
+      <p className="mt-3 max-w-xs text-sm leading-7 text-[color:var(--muted)]">
+        Chúng mình đã nhận được xác nhận của bạn. Hẹn gặp bạn trong ngày vui!
+      </p>
+      <p className="mt-6 font-script text-[1.4rem] text-[color:var(--accent-rose-deep)]">
+        Trân trọng kính mời ♡
+      </p>
+    </div>
+  );
+}
+
+// ── UI helpers ────────────────────────────────────────────────────────────────
+
+function StepDot({ active, done, label }: { active: boolean; done: boolean; label: string }) {
+  return (
+    <div
+      className={cn(
+        "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 text-xs font-semibold transition-all duration-300",
+        done
+          ? "border-[color:var(--primary)] bg-[color:var(--primary)] text-white"
+          : active
+          ? "border-[color:var(--primary)] bg-white text-[color:var(--primary)]"
+          : "border-[color:var(--border)] bg-white text-[color:var(--muted)]"
+      )}
+    >
+      {done ? (
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M4 12.5l5.5 5.5L20 7" />
+        </svg>
+      ) : label}
+    </div>
+  );
+}
+
+function FormField({
+  children,
+  error,
+  htmlFor,
+  label,
+}: {
+  children: ReactNode;
+  error?: string;
+  htmlFor: string;
+  label: string;
+}) {
+  return (
+    <div>
+      <label
+        htmlFor={htmlFor}
+        className="block text-[0.72rem] uppercase tracking-[0.28em] text-[color:var(--primary)]"
+      >
+        {label}
+      </label>
+      <div className="mt-2">{children}</div>
+      {error && (
+        <p role="alert" className="mt-1.5 flex items-center gap-1.5 text-xs text-[#a14b3b]">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+          </svg>
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function inputCls(error?: string) {
   return cn(
-    "min-h-11 w-full rounded-[1.35rem] border bg-[rgba(255,252,247,0.9)] px-4 py-3 text-sm text-[color:var(--foreground)] shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] outline-none transition placeholder:text-[color:var(--muted)]/68 focus:border-[color:var(--primary)] focus:ring-2 focus:ring-[rgba(199,165,109,0.18)] sm:min-h-12",
-    hasError ? "border-[color:#a14b3b]" : "border-[rgba(199,165,109,0.2)]"
+    "w-full rounded-[1.2rem] border bg-[rgba(255,252,247,0.9)] px-4 py-3 text-sm text-[color:var(--foreground)] outline-none transition placeholder:text-[color:var(--muted)]/60",
+    "focus:border-[color:var(--primary)] focus:ring-2 focus:ring-[rgba(199,165,109,0.16)]",
+    "shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]",
+    error ? "border-[#c0614f]" : "border-[rgba(199,165,109,0.22)]"
   );
 }
