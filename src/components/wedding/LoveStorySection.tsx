@@ -1,170 +1,301 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
 import { Container } from "@/components/ui/container";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { weddingData } from "@/constants/wedding-data";
 import { cn } from "@/lib/cn";
 
-export type LoveStorySectionProps = {
-  className?: string;
-  eyebrow?: string;
-  subtitle?: string;
-  title?: string;
-};
+const STORY_FALLBACK = "/images/story/story-placeholder.svg";
 
-const DEFAULT_EYEBROW = "Love Story";
-const DEFAULT_TITLE = "Timeline cua nhung cot moc dan loi den ngay thanh hon";
-const DEFAULT_SUBTITLE =
-  "Moi khoanh khac trong hanh trinh yeu thuong deu co the duoc ke lai bang ngay thang, hinh anh va mot vai dong ngan gon. Tren mobile, timeline uu tien de doc va de cham.";
-const STORY_FALLBACK_IMAGE = "/images/story/story-placeholder.svg";
+// ── Component ─────────────────────────────────────────────────────────────────
 
-export function LoveStorySection({
-  className,
-  eyebrow = DEFAULT_EYEBROW,
-  subtitle = DEFAULT_SUBTITLE,
-  title = DEFAULT_TITLE
-}: LoveStorySectionProps) {
+export type LoveStorySectionProps = { className?: string };
+
+export function LoveStorySection({ className }: LoveStorySectionProps) {
+  const [headerVisible, setHeaderVisible] = useState(false);
+  const headerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) setHeaderVisible(true); },
+      { threshold: 0.1 }
+    );
+    if (headerRef.current) io.observe(headerRef.current);
+    return () => io.disconnect();
+  }, []);
+
+  const entries = weddingData.loveStory;
+
   return (
-    <section className={cn("relative py-16 sm:py-20 lg:py-24", className)} id="love-story">
+    <section
+      className={cn("relative py-16 sm:py-20 lg:py-28 overflow-hidden", className)}
+      id="love-story"
+    >
+      {/* Background blobs */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-20 top-1/4 h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(188,138,148,0.07),transparent_70%)] blur-3xl" />
+        <div className="absolute -right-20 bottom-1/3 h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(199,165,109,0.07),transparent_70%)] blur-3xl" />
+        <div className="absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(252,244,238,0.6),transparent_70%)] blur-3xl" />
+      </div>
+
       <Container>
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="wedding-fade-in wedding-fade-in-delay-1 text-[0.68rem] uppercase tracking-[0.4em] text-[color:var(--accent-rose-deep)]">
-            {eyebrow}
+        {/* Header */}
+        <div
+          ref={headerRef}
+          className={cn(
+            "mx-auto max-w-xl text-center transition-all duration-700 ease-out",
+            headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          )}
+        >
+          <p className="text-[0.66rem] uppercase tracking-[0.44em] text-[color:var(--accent-rose-deep)]">
+            Love Story
           </p>
-          <h2 className="wedding-fade-in wedding-fade-in-delay-2 mt-4 font-display text-[2rem] leading-tight text-balance text-[color:var(--foreground)] sm:text-5xl">
-            {title}
+          <h2 className="mt-3 font-script text-[3rem] leading-tight text-[color:var(--foreground)] sm:text-[3.8rem]">
+            Hành trình của chúng mình
           </h2>
-          <p className="wedding-fade-in wedding-fade-in-delay-3 mt-4 text-sm leading-7 text-[color:var(--muted)] sm:text-base">
-            {subtitle}
+          <p className="mt-3 text-sm leading-7 text-[color:var(--muted)] sm:text-base">
+            Từng khoảnh khắc nhỏ dẫn đến ngày hôm nay — một câu chuyện tình yêu được viết bằng thời gian.
           </p>
         </div>
 
-        <div className="relative mt-12 lg:mt-16">
-          <div className="absolute bottom-0 left-5 top-0 w-px bg-[linear-gradient(180deg,rgba(188,138,148,0),rgba(199,165,109,0.56),rgba(188,138,148,0.24),rgba(188,138,148,0))] sm:left-6 lg:left-1/2 lg:-translate-x-1/2" />
+        {/* Timeline */}
+        <div className="relative mt-14 lg:mt-20">
 
-          <div className="space-y-10 sm:space-y-12 lg:space-y-16">
-            {weddingData.loveStory.map((item, index) => (
-              <TimelineItem index={index} item={item} key={`${item.date}-${item.title}`} />
+          {/* Center spine — desktop only */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute bottom-0 left-1/2 top-0 hidden w-px -translate-x-1/2 lg:block"
+            style={{
+              background: "linear-gradient(180deg, transparent 0%, rgba(199,165,109,0.35) 8%, rgba(199,165,109,0.5) 50%, rgba(188,138,148,0.35) 92%, transparent 100%)"
+            }}
+          />
+
+          {/* Left spine — mobile/tablet */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute bottom-0 left-5 top-0 w-px sm:left-7 lg:hidden"
+            style={{
+              background: "linear-gradient(180deg, transparent 0%, rgba(199,165,109,0.4) 6%, rgba(199,165,109,0.5) 50%, rgba(188,138,148,0.3) 94%, transparent 100%)"
+            }}
+          />
+
+          <div className="space-y-10 sm:space-y-12 lg:space-y-0">
+            {entries.map((item, index) => (
+              <TimelineEntry key={`${item.date}-${index}`} item={item} index={index} total={entries.length} />
             ))}
           </div>
+        </div>
+
+        {/* End marker */}
+        <div className="mt-12 flex flex-col items-center gap-3 lg:mt-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full border border-[rgba(199,165,109,0.36)] bg-[linear-gradient(145deg,rgba(255,252,247,0.96),rgba(248,231,223,0.96))] shadow-[0_16px_40px_rgba(125,87,79,0.14)]">
+            <HeartIcon className="h-5 w-5 text-[color:var(--accent-rose-deep)]" />
+          </div>
+          <p className="font-script text-[1.5rem] text-[color:var(--accent-rose-deep)]">
+            và mãi mãi...
+          </p>
         </div>
       </Container>
     </section>
   );
 }
 
-type TimelineItemProps = {
-  index: number;
+// ── Timeline Entry ────────────────────────────────────────────────────────────
+
+type TimelineEntryProps = {
   item: (typeof weddingData.loveStory)[number];
+  index: number;
+  total: number;
 };
 
-function TimelineItem({ index, item }: TimelineItemProps) {
-  const isRightAligned = index % 2 === 1;
-  const diaryLabel = `Nhat ky ${String(index + 1).padStart(2, "0")}`;
+function TimelineEntry({ item, index, total }: TimelineEntryProps) {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef<HTMLElement>(null);
+  const isRight = index % 2 === 1; // desktop: alternate sides
+  const isLast = index === total - 1;
+
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) setVisible(true); },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+    );
+    if (ref.current) io.observe(ref.current);
+    return () => io.disconnect();
+  }, []);
 
   return (
-    <article className="relative pl-12 sm:pl-16 lg:pl-0">
-      <div className="absolute left-5 top-12 -translate-x-1/2 sm:left-6 lg:left-1/2">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/50 bg-[linear-gradient(145deg,rgba(255,252,247,0.96),rgba(248,231,223,0.96))] shadow-[0_16px_36px_rgba(125,87,79,0.14)] backdrop-blur-md">
-          <HeartIcon className="h-4 w-4 text-[color:var(--accent-rose-deep)]" />
-        </div>
+    <article
+      ref={ref}
+      className={cn(
+        "relative",
+        // Mobile: left-padded to make room for spine + dot
+        "pl-14 sm:pl-20",
+        // Desktop: grid with spine in center, alternate content sides
+        "lg:grid lg:grid-cols-2 lg:pl-0",
+        // Desktop spacing
+        "lg:py-10",
+        !isLast && "lg:pb-16"
+      )}
+    >
+      {/* ── Center / left dot ─────────────────────────────────── */}
+      {/* Mobile dot — left spine */}
+      <div className="absolute left-5 top-8 -translate-x-1/2 sm:left-7 lg:hidden">
+        <TimelineDot index={index} />
       </div>
 
+      {/* Desktop dot — center spine */}
+      <div className="absolute left-1/2 top-10 -translate-x-1/2 -translate-y-1/2 hidden lg:flex">
+        <TimelineDot index={index} />
+      </div>
+
+      {/* ── Card placement ────────────────────────────────────── */}
+      {/* Desktop: empty half for opposite side */}
+      {isRight && <div className="hidden lg:block" />}
+
+      {/* Card */}
       <div
         className={cn(
-          "wedding-fade-in lg:w-[calc(50%_-_2.5rem)]",
-          index === 0 ? "wedding-fade-in-delay-1" : "",
-          index === 1 ? "wedding-fade-in-delay-2" : "",
-          index >= 2 ? "wedding-fade-in-delay-3" : "",
-          isRightAligned ? "lg:ml-auto" : "lg:mr-auto"
+          "transition-all duration-700 ease-out",
+          visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
+          // Desktop padding away from spine
+          isRight ? "lg:pl-14 lg:pr-2" : "lg:pr-14 lg:pl-2"
         )}
+        style={{ transitionDelay: `${index * 60}ms` }}
       >
-        <div className="relative overflow-hidden rounded-[2rem] border border-[color:var(--border)] bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(252,243,237,0.96))] p-3 shadow-[0_30px_84px_rgba(125,87,79,0.12)] sm:rounded-[2.25rem] sm:p-4">
-          <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-white/80" />
-          <div className="pointer-events-none absolute left-6 top-6 h-24 w-24 rounded-full bg-[radial-gradient(circle,rgba(188,138,148,0.12),transparent_72%)] blur-2xl" />
-          <div className="pointer-events-none absolute bottom-6 right-6 h-24 w-24 rounded-full bg-[radial-gradient(circle,rgba(199,165,109,0.12),transparent_72%)] blur-2xl" />
-
-          <div className="relative rounded-[1.55rem] border border-white/65 bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(255,249,244,0.96))] px-5 py-5 sm:rounded-[1.8rem] sm:px-7 sm:py-7">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="inline-flex w-max items-center gap-2 rounded-full border border-[color:var(--border)] bg-white/72 px-3 py-2 text-[0.68rem] uppercase tracking-[0.28em] text-[color:var(--accent-rose-deep)] shadow-[0_10px_24px_rgba(125,87,79,0.08)]">
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--accent-rose-soft)] text-[color:var(--accent-rose-deep)]">
-                  <FlowerIcon className="h-3.5 w-3.5" />
-                </span>
-                {diaryLabel}
-              </div>
-
-              <div className="inline-flex items-center gap-2 text-[0.72rem] uppercase tracking-[0.3em] text-[color:var(--primary-strong)] sm:text-right">
-                <span className="h-px w-8 bg-[color:var(--primary)]/45" />
-                {item.date}
-              </div>
-            </div>
-
-            {item.image ? (
-              <div className="relative mt-6 aspect-[4/3] overflow-hidden rounded-[1.4rem] shadow-[0_22px_50px_rgba(125,87,79,0.16)] sm:rounded-[1.7rem]">
-                <SafeImage
-                  alt={item.image.alt}
-                  className="object-cover object-center"
-                  fallbackSrc={STORY_FALLBACK_IMAGE}
-                  fill
-                  sizes="(min-width: 1024px) 42vw, 100vw"
-                  src={item.image.src}
-                />
-                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(45,28,26,0.06)_0%,rgba(45,28,26,0)_46%,rgba(45,28,26,0.18)_100%)]" />
-              </div>
-            ) : (
-              <div className="mt-6 flex items-center gap-3 text-[0.72rem] uppercase tracking-[0.28em] text-[color:var(--muted)]">
-                <span className="h-px flex-1 bg-[color:var(--border)]" />
-                Ghi chu cua hanh trinh
-                <span className="h-px flex-1 bg-[color:var(--border)]" />
-              </div>
-            )}
-
-            <div className="mt-6 sm:mt-7">
-              <h3 className="font-display text-[1.8rem] leading-tight text-[color:var(--foreground)] sm:text-[2.5rem]">
-                {item.title}
-              </h3>
-              <p className="mt-4 max-w-2xl text-sm leading-8 text-[color:var(--muted)] sm:text-base">
-                {item.description}
-              </p>
-            </div>
-          </div>
-        </div>
+        <StoryCard item={item} index={index} />
       </div>
+
+      {/* Desktop: empty half for right-side cards */}
+      {!isRight && <div className="hidden lg:block" />}
     </article>
   );
 }
 
-type IconProps = {
-  className?: string;
-};
+// ── Story Card ────────────────────────────────────────────────────────────────
 
-function HeartIcon({ className }: IconProps) {
+function StoryCard({
+  item,
+  index,
+}: {
+  item: (typeof weddingData.loveStory)[number];
+  index: number;
+}) {
   return (
-    <svg
-      aria-hidden="true"
-      className={className}
-      fill="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path d="M11.999 21.145a.75.75 0 0 1-.53-.22l-7.2-7.2a4.92 4.92 0 0 1 6.96-6.96L12 7.537l.771-.772a4.92 4.92 0 1 1 6.96 6.96l-7.2 7.2a.75.75 0 0 1-.532.22Z" />
-    </svg>
+    <div className="group relative overflow-hidden rounded-[1.75rem] border border-[rgba(199,165,109,0.26)] bg-[linear-gradient(160deg,rgba(255,255,255,0.98),rgba(252,244,239,0.96))] shadow-[0_20px_60px_rgba(125,87,79,0.10)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_28px_72px_rgba(125,87,79,0.15)]">
+      {/* Top shimmer */}
+      <div className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(199,165,109,0.55),transparent)]" />
+      {/* Inner border */}
+      <div className="pointer-events-none absolute inset-[7px] rounded-[1.35rem] border border-[rgba(199,165,109,0.10)]" />
+
+      {/* Image */}
+      {item.image && (
+        <div className="relative aspect-[16/9] w-full overflow-hidden rounded-t-[1.7rem] sm:aspect-[2/1]">
+          <SafeImage
+            src={item.image.src}
+            alt={item.image.alt}
+            fallbackSrc={STORY_FALLBACK}
+            fill
+            sizes="(min-width: 1024px) 45vw, (min-width: 640px) 80vw, 90vw"
+            className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+          />
+          {/* Gradient over image */}
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(45,25,22,0.04)_0%,rgba(45,25,22,0)_40%,rgba(45,25,22,0.22)_100%)]" />
+
+          {/* Date badge over image */}
+          <div className="absolute left-4 top-4 sm:left-5 sm:top-5">
+            <DateBadge date={item.date} index={index} />
+          </div>
+        </div>
+      )}
+
+      {/* Content */}
+      <div className="relative p-5 sm:p-6">
+        {/* Date badge — no image variant */}
+        {!item.image && (
+          <div className="mb-4">
+            <DateBadge date={item.date} index={index} />
+          </div>
+        )}
+
+        {/* Chapter label */}
+        <p className="text-[0.62rem] uppercase tracking-[0.38em] text-[color:var(--accent-rose-deep)]">
+          Chương {String(index + 1).padStart(2, "0")}
+        </p>
+
+        <h3 className="mt-2 font-display text-[1.45rem] leading-snug text-[color:var(--foreground)] sm:text-[1.7rem]">
+          {item.title}
+        </h3>
+
+        {/* Divider */}
+        <div className="my-4 h-px w-16 bg-[linear-gradient(90deg,rgba(199,165,109,0.6),transparent)]" />
+
+        <p className="text-sm leading-7 text-[color:var(--muted)] sm:text-[0.95rem]">
+          {item.description}
+        </p>
+
+        {/* No-image: decorative quote mark */}
+        {!item.image && (
+          <div className="pointer-events-none absolute right-5 bottom-4 font-script text-[5rem] leading-none text-[rgba(199,165,109,0.08)] select-none">
+            "
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
-function FlowerIcon({ className }: IconProps) {
+// ── Timeline Dot ──────────────────────────────────────────────────────────────
+
+function TimelineDot({ index }: { index: number }) {
+  // Alternate between rose and gold
+  const isGold = index % 2 === 0;
   return (
-    <svg
-      aria-hidden="true"
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
+    <div
+      className={cn(
+        "relative flex h-10 w-10 items-center justify-center rounded-full border-2 border-white shadow-[0_8px_24px_rgba(125,87,79,0.18)] z-10",
+        isGold
+          ? "bg-[linear-gradient(145deg,rgba(212,178,120,0.95),rgba(185,148,88,0.9))]"
+          : "bg-[linear-gradient(145deg,rgba(200,152,164,0.95),rgba(172,112,128,0.9))]"
+      )}
     >
-      <path
-        d="M12 5.2c1.2-2.3 4.6-2.2 5.6.2 1 2.5-1 4.6-3.2 5.1 2.3.1 4.4 2.2 3.9 4.8-.6 2.7-3.8 3.7-5.7 1.9.7 2.2-.5 4.9-3 5.3-2.8.5-4.8-1.9-4.4-4.4-1.7 1.8-4.9 1.2-5.6-1.4-.8-2.8 1.4-5 4-5.4-2.2-.4-4-2.5-3.2-5 .8-2.5 4.2-2.8 5.6-.6.5-2.4 3.5-3.3 5-.5Z"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
+      <HeartIcon className="h-4 w-4 text-white" />
+      {/* Pulse ring */}
+      <div className="absolute inset-0 animate-ping rounded-full opacity-20"
+        style={{ background: isGold ? "rgba(199,165,109,0.5)" : "rgba(188,138,148,0.5)" }}
       />
-      <circle cx="12" cy="12" fill="currentColor" r="1.8" />
+    </div>
+  );
+}
+
+// ── Date Badge ────────────────────────────────────────────────────────────────
+
+function DateBadge({ date, index }: { date: string; index: number }) {
+  const isGold = index % 2 === 0;
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[0.63rem] font-medium uppercase tracking-[0.28em] backdrop-blur-sm",
+        isGold
+          ? "border-[rgba(199,165,109,0.40)] bg-[rgba(255,252,247,0.88)] text-[color:var(--primary-strong)]"
+          : "border-[rgba(188,138,148,0.36)] bg-[rgba(255,248,250,0.88)] text-[color:var(--accent-rose-deep)]"
+      )}
+    >
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+        <rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" />
+      </svg>
+      {date}
+    </span>
+  );
+}
+
+// ── Icons ─────────────────────────────────────────────────────────────────────
+
+function HeartIcon({ className }: { className?: string }) {
+  return (
+    <svg aria-hidden="true" className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M11.999 21.145a.75.75 0 0 1-.53-.22l-7.2-7.2a4.92 4.92 0 0 1 6.96-6.96L12 7.537l.771-.772a4.92 4.92 0 1 1 6.96 6.96l-7.2 7.2a.75.75 0 0 1-.532.22Z" />
     </svg>
   );
 }
