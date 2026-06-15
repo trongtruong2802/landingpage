@@ -11,17 +11,8 @@ import { cn } from "@/lib/cn";
 const FALLBACK_SRC = "/images/album/album-placeholder.svg";
 const INITIAL_VISIBLE = 6;
 
-// Masonry column heights: [tall, short, medium, tall, short] pattern
-const masonryHeights = [
-  "aspect-[3/4]",   // tall
-  "aspect-[4/3]",   // wide
-  "aspect-[3/4]",   // tall
-  "aspect-[1/1]",   // square
-  "aspect-[4/3]",   // wide
-  "aspect-[3/4]",   // tall
-  "aspect-[1/1]",   // square
-  "aspect-[4/3]",   // wide
-];
+// Uniform grid aspect ratio: standard portrait aspect ratio for wedding photo albums
+const galleryAspectClass = "aspect-[3/4]";
 
 export type GallerySectionProps = {
   className?: string;
@@ -102,10 +93,9 @@ export function GallerySection({ className }: GallerySectionProps) {
           </p>
         </div>
 
-        {/* Masonry grid */}
-        <div className="mt-10 columns-1 gap-4 sm:columns-2 lg:columns-3 lg:gap-5">
+        {/* Uniform responsive photo Grid */}
+        <div className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {displayedPhotos.map((photo, index) => {
-            const aspectClass = masonryHeights[index % masonryHeights.length];
             const isVisible = visibleItems.has(index);
 
             return (
@@ -114,9 +104,9 @@ export function GallerySection({ className }: GallerySectionProps) {
                 ref={(el) => { itemRefs.current[index] = el; }}
                 data-index={index}
                 className={cn(
-                  "group relative mb-4 break-inside-avoid overflow-hidden rounded-2xl border border-[color:var(--border)] cursor-pointer",
-                  "shadow-[0_8px_32px_rgba(125,87,79,0.08)] transition-all duration-500 ease-out",
-                  "hover:-translate-y-1 hover:shadow-[0_20px_56px_rgba(125,87,79,0.16)]",
+                  "group relative overflow-hidden rounded-2xl border border-[rgba(199,165,109,0.20)] cursor-pointer",
+                  "shadow-[0_12px_32px_rgba(125,87,79,0.06)] transition-all duration-500 ease-out",
+                  "hover:-translate-y-1 hover:shadow-[0_20px_48px_rgba(125,87,79,0.14)]",
                   isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6",
                   "[transition:opacity_600ms_ease,transform_600ms_ease,box-shadow_300ms_ease]"
                 )}
@@ -130,12 +120,12 @@ export function GallerySection({ className }: GallerySectionProps) {
                 }}
               >
                 {/* Image */}
-                <div className={cn("relative w-full overflow-hidden bg-[color:var(--background-soft)]", aspectClass)}>
+                <div className={cn("relative w-full overflow-hidden bg-[color:var(--background-soft)]", galleryAspectClass)}>
                   <SafeGalleryImage
                     src={photo.src}
                     alt={photo.alt}
                     fill
-                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
                     className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.05]"
                   />
 
@@ -145,11 +135,11 @@ export function GallerySection({ className }: GallerySectionProps) {
                   {/* Hover caption */}
                   <div className="absolute inset-x-0 bottom-0 translate-y-2 p-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
                     {photo.caption && (
-                      <p className="font-display text-[0.95rem] italic leading-snug text-white/95">
+                      <p className="font-display text-[0.85rem] italic leading-snug text-white/95 sm:text-[0.95rem]">
                         {photo.caption}
                       </p>
                     )}
-                    <p className="mt-1 text-[0.62rem] uppercase tracking-[0.3em] text-white/70">
+                    <p className="mt-1 text-[0.58rem] uppercase tracking-[0.3em] text-white/70 sm:text-[0.62rem]">
                       Nhấn để xem lớn hơn
                     </p>
                   </div>
@@ -233,13 +223,13 @@ export function GallerySection({ className }: GallerySectionProps) {
             </div>
 
             {/* Image frame */}
-            <div className="relative w-full overflow-hidden rounded-2xl border border-white/10 bg-[rgba(255,250,244,0.04)]">
-              <div className="relative min-h-[60vw] max-h-[70vh] sm:min-h-0 sm:h-[65vh]">
+            <div className="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-white/10 bg-[rgba(255,250,244,0.04)]">
+              <div className="relative aspect-[3/4] w-full max-h-[68vh] sm:max-h-[75vh] mx-auto">
                 <SafeGalleryImage
                   src={selectedPhoto.src}
                   alt={selectedPhoto.alt}
                   fill
-                  sizes="100vw"
+                  sizes="(max-width: 768px) 100vw, 80vw"
                   className="object-contain"
                   key={selectedPhoto.src}
                 />

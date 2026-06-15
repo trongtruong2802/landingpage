@@ -27,12 +27,9 @@ const navigationItems = [
   { href: "#bank-section", label: "Mừng cưới" }
 ];
 
-const INVITATION_TEXT =
-  "\u0054\u0072\u00e2\u006e\u0020\u0074\u0072\u1ecd\u006e\u0067\u0020\u006b\u00ed\u006e\u0068\u0020\u006d\u1eddi";
-const COUNTDOWN_TITLE =
-  "\u0110\u1ebf\u006d\u0020\u006e\u0067\u01b0\u1ee3\u0063\u0020\u0111\u1ebf\u006e\u0020\u006e\u0067\u00e0\u0079\u0020\u0068\u1ea1\u006e\u0068\u0020\u0070\u0068\u00fa\u0063";
-const COUNTDOWN_SUBTITLE =
-  "\u0048\u00e0\u006e\u0068\u0020\u0074\u0072\u00ec\u006e\u0068\u0020\u0064\u1eab\u006e\u0020\u0111\u1ebf\u006e\u0020\u006e\u0067\u00e0\u0079\u0020\u0111\u1eb7\u0063\u0020\u0062\u0069\u1ec7\u0074\u0020\u0111\u01b0\u1ee3\u0063\u0020\u0111\u0065\u006d\u0020\u0111\u1ebf\u006d\u0020\u0071\u0075\u0061\u0020\u0074\u1eeb\u006e\u0067\u0020\u006b\u0068\u006f\u1ea3\u006e\u0068\u0020\u006b\u0068\u1eaf\u0063\u002c\u0020\u006d\u1ed9\u0074\u0020\u0063\u00e1\u0063\u0068\u0020\u006e\u0068\u1eb9\u0020\u006e\u0068\u00e0\u006e\u0067\u0020\u006e\u0068\u01b0\u006e\u0067\u0020\u0073\u0061\u006e\u0067\u0020\u0074\u0072\u1ecd\u006e\u0067\u002e";
+const INVITATION_TEXT = "Trân trọng kính mời";
+const COUNTDOWN_TITLE = "Đếm ngược đến ngày hạnh phúc";
+const COUNTDOWN_SUBTITLE = "Hành trình dẫn đến ngày đặc biệt được đong đếm qua từng khoảnh khắc, một cách nhẹ nhàng và trọn vẹn.";
 
 export default function HomePage() {
   return (
@@ -44,8 +41,8 @@ export default function HomePage() {
 
       <div className="relative z-10">
         <header className="sticky top-0 z-30 border-b border-[color:var(--border)] bg-[rgba(255,249,244,0.72)] backdrop-blur-2xl">
-          <Container className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:py-4">
-            <div>
+          <Container className="flex flex-col items-center gap-3 py-3 sm:py-4">
+            <div className="text-center">
               <p className="text-[0.65rem] uppercase tracking-[0.45em] text-[color:var(--accent-rose-deep)]">
                 Wedding Day
               </p>
@@ -57,8 +54,8 @@ export default function HomePage() {
             </div>
 
             <nav
-              aria-label="Dieu huong landing page"
-              className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 sm:justify-end"
+              aria-label="Điều hướng thiệp cưới"
+              className="-mx-1 flex flex-wrap justify-center gap-2 px-1 pb-1"
             >
               {navigationItems.map((item) => (
                 <a

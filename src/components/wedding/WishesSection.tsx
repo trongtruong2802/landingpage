@@ -1,10 +1,9 @@
 "use client";
 
 import type { ChangeEvent, ReactNode } from "react";
-import { useCallback, useEffect, useRef, useState, useMemo } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Container } from "@/components/ui/container";
-import { weddingData } from "@/constants/wedding-data";
 import { cn } from "@/lib/cn";
 
 // ── Config ────────────────────────────────────────────────────────────────────
@@ -46,14 +45,6 @@ function makeId() {
 export type WishesSectionProps = { className?: string };
 
 export function WishesSection({ className }: WishesSectionProps) {
-  const sampleWishes = useMemo(() => {
-    return weddingData.sampleWishes.map((w, i) => ({
-      id: `sample-${i}`,
-      author: w.author,
-      message: w.message
-    }));
-  }, []);
-
   const [wishes, setWishes] = useState<Wish[]>([]);
   const [fetchState, setFetchState] = useState<FetchState>(
     WISHES_API_URL ? "loading" : "idle"
@@ -84,7 +75,7 @@ export function WishesSection({ className }: WishesSectionProps) {
   // ── Fetch từ Google Sheets ──────────────────────────────────────────────────
   const fetchWishes = useCallback(async () => {
     if (!WISHES_API_URL) {
-      setWishes(sampleWishes);
+      setWishes([]);
       setFetchState("ok");
       return;
     }
@@ -95,14 +86,14 @@ export function WishesSection({ className }: WishesSectionProps) {
       if (data.wishes?.length) {
         setWishes(data.wishes.map((w, i) => ({ ...w, id: `remote-${i}` })));
       } else {
-        setWishes(sampleWishes);
+        setWishes([]);
       }
       setFetchState("ok");
     } catch {
-      setWishes(sampleWishes);
+      setWishes([]);
       setFetchState("error");
     }
-  }, [sampleWishes]);
+  }, []);
 
   useEffect(() => { fetchWishes(); }, [fetchWishes]);
 

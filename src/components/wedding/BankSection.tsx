@@ -29,7 +29,10 @@ export type BankSectionProps = {
 };
 
 export function BankSection({ className }: BankSectionProps) {
+  const [activeTab, setActiveTab] = useState<"groom" | "bride">("groom");
   const [isCopied, setIsCopied] = useState(false);
+
+  const activeBank = activeTab === "groom" ? weddingData.groomBank : weddingData.brideBank;
 
   useEffect(() => {
     if (!isCopied) {
@@ -46,7 +49,7 @@ export function BankSection({ className }: BankSectionProps) {
   }, [isCopied]);
 
   const handleCopy = async () => {
-    const accountNumber = weddingData.bankQr.accountNumber;
+    const accountNumber = activeBank.accountNumber;
 
     try {
       if (navigator.clipboard?.writeText) {
@@ -79,6 +82,40 @@ export function BankSection({ className }: BankSectionProps) {
             className="absolute bottom-0 right-0 h-36 w-36 rounded-full bg-[rgba(199,165,109,0.12)] blur-3xl"
           />
 
+          {/* Dynamic Bank Tabs Selector */}
+          <div className="relative z-10 flex justify-center gap-3 pt-8 px-6">
+            <button
+              onClick={() => {
+                setActiveTab("groom");
+                setIsCopied(false);
+              }}
+              type="button"
+              className={cn(
+                "min-h-10 px-5 rounded-full border text-[0.72rem] font-semibold uppercase tracking-[0.14em] transition-all duration-300",
+                activeTab === "groom"
+                  ? "bg-[color:var(--primary)] text-white border-[color:var(--primary)] shadow-[0_8px_20px_rgba(199,165,109,0.24)]"
+                  : "bg-white/60 text-[color:var(--muted)] border-[color:var(--border)] hover:bg-white/80 hover:text-[color:var(--foreground)]"
+              )}
+            >
+              Mừng cưới Chú rể
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab("bride");
+                setIsCopied(false);
+              }}
+              type="button"
+              className={cn(
+                "min-h-10 px-5 rounded-full border text-[0.72rem] font-semibold uppercase tracking-[0.14em] transition-all duration-300",
+                activeTab === "bride"
+                  ? "bg-[color:var(--primary)] text-white border-[color:var(--primary)] shadow-[0_8px_20px_rgba(199,165,109,0.24)]"
+                  : "bg-white/60 text-[color:var(--muted)] border-[color:var(--border)] hover:bg-white/80 hover:text-[color:var(--foreground)]"
+              )}
+            >
+              Mừng cưới Cô dâu
+            </button>
+          </div>
+
           <div className="grid gap-0 lg:grid-cols-[0.9fr_1.1fr]">
             <div className="relative border-b border-[rgba(199,165,109,0.18)] p-6 sm:p-8 lg:border-b-0 lg:border-r lg:border-r-[rgba(199,165,109,0.18)] lg:p-10">
               <p className="wedding-fade-in wedding-fade-in-delay-1 text-[0.68rem] uppercase tracking-[0.4em] text-[color:var(--primary)]">
@@ -97,12 +134,13 @@ export function BankSection({ className }: BankSectionProps) {
                     <div className="relative aspect-square overflow-hidden rounded-[1.35rem] border border-[rgba(199,165,109,0.2)] bg-white p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)] sm:p-5">
                       <div className="relative h-full w-full overflow-hidden rounded-[1rem]">
                         <SafeImage
-                          alt={weddingData.bankQr.qrImage.alt}
-                          className="object-contain"
+                          key={activeBank.qrImage.src}
+                          alt={activeBank.qrImage.alt}
+                          className="object-contain animate-[wishPop_0.3s_ease-out]"
                           fallbackSrc={QR_FALLBACK_IMAGE}
                           fill
                           sizes="(min-width: 1024px) 19rem, (min-width: 640px) 16rem, 72vw"
-                          src={weddingData.bankQr.qrImage.src}
+                          src={activeBank.qrImage.src}
                         />
                       </div>
                     </div>
@@ -111,16 +149,16 @@ export function BankSection({ className }: BankSectionProps) {
 
                 <div className="mt-4 flex items-center justify-center">
                   <span className="rounded-full border border-[rgba(199,165,109,0.18)] bg-white/70 px-4 py-2 text-[0.72rem] uppercase tracking-[0.26em] text-[color:var(--primary)]">
-                    QR Wedding Gift
+                    QR {activeTab === "groom" ? "Chú rể" : "Cô dâu"}
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="p-6 sm:p-8 lg:p-10">
+            <div className="p-6 sm:p-8 lg:p-10 flex flex-col justify-center">
               <div className="grid gap-4 sm:grid-cols-2">
-                <DetailCard label={BANK_NAME_LABEL} value={weddingData.bankQr.bankName} />
-                <DetailCard label={ACCOUNT_NAME_LABEL} value={weddingData.bankQr.accountName} />
+                <DetailCard label={BANK_NAME_LABEL} value={activeBank.bankName} />
+                <DetailCard label={ACCOUNT_NAME_LABEL} value={activeBank.accountName} />
               </div>
 
               <div className="relative mt-4 overflow-hidden rounded-[1.9rem] border border-[rgba(199,165,109,0.22)] bg-[linear-gradient(180deg,rgba(255,252,247,0.92),rgba(255,255,255,0.82))] p-5 shadow-[0_20px_44px_rgba(154,121,98,0.08)] sm:p-6">
@@ -131,8 +169,8 @@ export function BankSection({ className }: BankSectionProps) {
                 <p className="text-[0.72rem] uppercase tracking-[0.32em] text-[color:var(--primary)]">
                   {ACCOUNT_NUMBER_LABEL}
                 </p>
-                <p className="mt-4 break-all font-display text-[2rem] leading-tight text-[color:var(--foreground)] sm:text-[2.75rem] lg:text-[3.4rem]">
-                  {weddingData.bankQr.accountNumber}
+                <p className="mt-4 break-all font-display text-[2rem] leading-tight text-[color:var(--foreground)] sm:text-[2.75rem] lg:text-[3.2rem] xl:text-[3.4rem]">
+                  {activeBank.accountNumber}
                 </p>
 
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
