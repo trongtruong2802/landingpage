@@ -5,6 +5,11 @@ import { useEffect, useRef, useState } from "react";
 import { Container } from "@/components/ui/container";
 import { weddingData } from "@/constants/wedding-data";
 import { cn } from "@/lib/cn";
+import {
+  parseEventDateTime,
+  generateGoogleCalendarLink,
+  generateIcsDataUri
+} from "@/lib/calendar";
 
 // ── Labels ────────────────────────────────────────────────────────────────────
 
@@ -45,8 +50,19 @@ export function EventSection({ className }: EventSectionProps) {
   const events = weddingData.events;
   const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
   const [headerVisible, setHeaderVisible] = useState(false);
+  const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
   const headerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (!(e.target as HTMLElement).closest(".calendar-menu-btn")) {
+        setOpenMenuIndex(null);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -190,7 +206,7 @@ export function EventSection({ className }: EventSectionProps) {
                     )}
 
                     {/* CTA */}
-                    <div className="relative mt-6">
+                    <div className="relative mt-6 flex flex-wrap gap-2.5">
                       <a
                         href={event.mapUrl ?? buildMapsUrl(event.venue, event.address)}
                         target="_blank"
@@ -203,6 +219,62 @@ export function EventSection({ className }: EventSectionProps) {
                           <path d="M7 17L17 7M17 7H7M17 7v10" />
                         </svg>
                       </a>
+
+                      {/* Add to Calendar Button and Menu */}
+                      <div className="relative inline-block calendar-menu-btn">
+                        <button
+                          type="button"
+                          onClick={() => setOpenMenuIndex(openMenuIndex === index ? null : index)}
+                          className="inline-flex items-center gap-2 rounded-full border border-[rgba(199,165,109,0.36)] bg-white/80 px-4 py-2.5 text-[0.72rem] font-medium uppercase tracking-[0.18em] text-[color:var(--foreground)] shadow-[0_8px_24px_rgba(125,87,79,0.08)] transition-all hover:border-[color:var(--primary)] hover:bg-white hover:shadow-[0_12px_32px_rgba(125,87,79,0.14)]"
+                        >
+                          <CalendarIcon className="text-[color:var(--primary-strong)]" />
+                          Lưu lịch
+                          <svg
+                            className={cn("h-3 w-3 transition-transform duration-200", openMenuIndex === index ? "rotate-180" : "")}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M6 9l6 6 6-6" />
+                          </svg>
+                        </button>
+
+                        {/* Dropdown Menu */}
+                        {openMenuIndex === index && (() => {
+                          const eventDate = parseEventDateTime(event.date, event.time);
+                          const calendarPayload = {
+                            title: `Đám cưới Cá Đuối & Cá Mập - ${event.title}`,
+                            description: event.description ?? `Tham dự sự kiện ${event.title} mừng đám cưới Cá Đuối và Cá Mập.`,
+                            location: `${event.venue}, ${event.address}`,
+                            startDate: eventDate,
+                          };
+
+                          return (
+                            <div className="absolute left-0 mt-2 z-20 w-44 rounded-xl border border-[rgba(199,165,109,0.22)] bg-white p-1.5 shadow-[0_12px_36px_rgba(125,87,79,0.16)] animate-[wishPop_0.2s_ease-out]">
+                              <a
+                                href={generateGoogleCalendarLink(calendarPayload)}
+                                target="_blank"
+                                rel="noreferrer"
+                                onClick={() => setOpenMenuIndex(null)}
+                                className="block rounded-lg px-3 py-2 text-left text-xs text-[color:var(--foreground)] hover:bg-[rgba(199,165,109,0.08)] transition"
+                              >
+                                📅 Google Calendar
+                              </a>
+                              <a
+                                href={generateIcsDataUri(calendarPayload)}
+                                download={`dam-cuoi-${event.type}.ics`}
+                                onClick={() => setOpenMenuIndex(null)}
+                                className="block rounded-lg px-3 py-2 text-left text-xs text-[color:var(--foreground)] hover:bg-[rgba(199,165,109,0.08)] transition"
+                              >
+                                🍏 Apple / Outlook
+                              </a>
+                            </div>
+                          );
+                        })()}
+                      </div>
                     </div>
                   </article>
                 </div>

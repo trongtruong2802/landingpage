@@ -1,3 +1,4 @@
+import { AudioPlayer } from "@/components/wedding/AudioPlayer";
 import { BankSection } from "@/components/wedding/BankSection";
 import { CountdownSection } from "@/components/wedding/CountdownSection";
 import { CoupleSection } from "@/components/wedding/CoupleSection";
@@ -16,14 +17,14 @@ import { weddingData } from "@/constants/wedding-data";
 
 const navigationItems = [
   { href: "#countdown", label: "Countdown" },
-  { href: "#couple", label: "Cap doi" },
-  { href: "#love-story", label: "Cau chuyen" },
+  { href: "#couple", label: "Cặp đôi" },
+  { href: "#love-story", label: "Câu chuyện" },
   { href: "#gallery", label: "Album" },
-  { href: "#event-section", label: "Su kien" },
-  { href: "#map-section", label: "Ban do" },
+  { href: "#event-section", label: "Sự kiện" },
+  { href: "#map-section", label: "Bản đồ" },
   { href: "#rsvp-section", label: "RSVP" },
-  { href: "#wishes-section", label: "Loi chuc" },
-  { href: "#bank-section", label: "Mung cuoi" }
+  { href: "#wishes-section", label: "Lời chúc" },
+  { href: "#bank-section", label: "Mừng cưới" }
 ];
 
 const INVITATION_TEXT =
@@ -116,6 +117,7 @@ export default function HomePage() {
         <SectionDivider />
         <BankSection />
         <FooterSection />
+        <AudioPlayer />
       </div>
     </main>
   );
