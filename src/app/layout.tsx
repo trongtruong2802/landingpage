@@ -33,6 +33,7 @@ const siteTitle = `${coupleNames} | Thiệp cưới online`;
 const siteDescription = `Landing page thiệp cưới của ${coupleNames}, ngày ${weddingData.weddingDate.display}. Theo dõi câu chuyện tình yêu, lịch sự kiện, bản đồ và gửi lời chúc ngay trên một trang tĩnh sang trọng.`;
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   title: siteTitle,
   description: siteDescription,
   applicationName: "Wedding Landing Page",
@@ -70,6 +71,12 @@ export const metadata: Metadata = {
         alt: weddingData.coverImage.alt
       }
     ]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
+    images: [weddingData.coverImage.src]
   },
   robots: {
     follow: true,

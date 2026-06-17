@@ -3,21 +3,46 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 
-const DEFAULT_MUSIC_URL = "https://assets.mixkit.co/music/preview/mixkit-beautiful-dream-293.mp3";
+const WEDDING_PLAYLIST = [
+  {
+    title: "Beautiful Dream (Ambient Piano)",
+    artist: "Mixkit",
+    url: "https://assets.mixkit.co/music/preview/mixkit-beautiful-dream-293.mp3"
+  },
+  {
+    title: "Forest Lullaby (Romantic Piano)",
+    artist: "Mixkit",
+    url: "https://assets.mixkit.co/music/preview/mixkit-forest-lullaby-1109.mp3"
+  },
+  {
+    title: "Sun and Clouds (Acoustic Guitar)",
+    artist: "Mixkit",
+    url: "https://assets.mixkit.co/music/preview/mixkit-sun-and-clouds-244.mp3"
+  }
+];
 
 export type AudioPlayerProps = {
   className?: string;
-  musicUrl?: string;
 };
 
-export function AudioPlayer({ className, musicUrl = DEFAULT_MUSIC_URL }: AudioPlayerProps) {
+export function AudioPlayer({ className }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // Initialize and play track on track index or component mount
   useEffect(() => {
-    const audio = new Audio(musicUrl);
+    const activeTrack = WEDDING_PLAYLIST[currentTrackIndex];
+    const audio = new Audio(activeTrack.url);
     audio.loop = true;
     audioRef.current = audio;
+
+    // If already playing, start new track immediately
+    if (isPlaying) {
+      audio.play().catch((err) => {
+        console.error("Audio playback start failed:", err);
+      });
+    }
 
     // Auto-play on first user interaction because browsers block autoplay
     const handleGesture = () => {
@@ -44,7 +69,7 @@ export function AudioPlayer({ className, musicUrl = DEFAULT_MUSIC_URL }: AudioPl
       audio.pause();
       audioRef.current = null;
     };
-  }, [musicUrl]);
+  }, [currentTrackIndex]);
 
   const togglePlay = () => {
     if (!audioRef.current) return;
@@ -63,13 +88,53 @@ export function AudioPlayer({ className, musicUrl = DEFAULT_MUSIC_URL }: AudioPl
     }
   };
 
+  const playNext = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const nextIndex = (currentTrackIndex + 1) % WEDDING_PLAYLIST.length;
+    
+    // Pause current audio before setting next index to prevent overlap
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    
+    setCurrentTrackIndex(nextIndex);
+    setIsPlaying(true);
+  };
+
+  const activeTrack = WEDDING_PLAYLIST[currentTrackIndex];
+
   return (
-    <div className={cn("fixed bottom-6 right-6 z-40", className)}>
+    <div className={cn("fixed bottom-6 right-6 z-40 flex items-center gap-2.5", className)}>
+      {/* Tiny Track Info & Next Button (visible when playing) */}
+      {isPlaying && (
+        <div className="flex items-center gap-2.5 rounded-full border border-[rgba(199,165,109,0.34)] bg-[linear-gradient(135deg,rgba(255,255,255,0.96),rgba(252,246,238,0.95))] px-3.5 py-1.5 shadow-[0_12px_28px_rgba(125,87,79,0.12)] backdrop-blur-md animate-[slideIn_0.3s_ease-out]">
+          <div className="flex flex-col text-left">
+            <span className="text-[0.56rem] uppercase tracking-[0.18em] text-[color:var(--primary)] font-semibold leading-none">Đang phát</span>
+            <span className="mt-1.5 text-[0.7rem] font-medium text-[color:var(--foreground)] truncate max-w-[120px] leading-none">
+              {activeTrack.title.split(" (")[0]}
+            </span>
+          </div>
+          <button
+            onClick={playNext}
+            type="button"
+            className="flex h-7 w-7 items-center justify-center rounded-full bg-[color:var(--primary-strong)]/10 hover:bg-[color:var(--primary-strong)]/20 text-[color:var(--primary-strong)] transition duration-200 active:scale-90 cursor-pointer"
+            title="Bài tiếp theo"
+            aria-label="Bài tiếp theo"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="5 4 15 12 5 20 5 4" fill="currentColor" />
+              <line x1="19" y1="5" x2="19" y2="19" strokeWidth="3" />
+            </svg>
+          </button>
+        </div>
+      )}
+
+      {/* Main Play/Pause Button */}
       <button
         onClick={togglePlay}
         type="button"
         aria-label={isPlaying ? "Tắt nhạc nền" : "Bật nhạc nền"}
-        className="group flex h-12 w-12 items-center justify-center rounded-full border border-[rgba(199,165,109,0.38)] bg-[linear-gradient(145deg,rgba(255,255,255,0.95),rgba(250,242,233,0.96))] text-[color:var(--primary-strong)] shadow-[0_12px_32px_rgba(125,87,79,0.22)] backdrop-blur-md transition-all duration-300 hover:scale-[1.08] hover:border-[color:var(--primary)] active:scale-95"
+        className="group flex h-12 w-12 items-center justify-center rounded-full border border-[rgba(199,165,109,0.38)] bg-[linear-gradient(145deg,rgba(255,255,255,0.95),rgba(250,242,233,0.96))] text-[color:var(--primary-strong)] shadow-[0_12px_32px_rgba(125,87,79,0.22)] backdrop-blur-md transition-all duration-300 hover:scale-[1.08] hover:border-[color:var(--primary)] active:scale-95 cursor-pointer"
       >
         {isPlaying ? (
           /* Animated sound wave bars */
@@ -97,11 +162,15 @@ export function AudioPlayer({ className, musicUrl = DEFAULT_MUSIC_URL }: AudioPl
         )}
       </button>
 
-      {/* CSS Animations for audio bars */}
+      {/* CSS Animations for audio bars and slide-in panel */}
       <style>{`
         @keyframes audioBar {
           0%, 100% { height: 4px; }
           50% { height: 16px; }
+        }
+        @keyframes slideIn {
+          from { opacity: 0; transform: translateX(16px) scale(0.95); }
+          to { opacity: 1; transform: translateX(0) scale(1); }
         }
       `}</style>
     </div>

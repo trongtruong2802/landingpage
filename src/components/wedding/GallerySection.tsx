@@ -24,6 +24,39 @@ export function GallerySection({ className }: GallerySectionProps) {
   const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+  // Touch/Mouse gestures for swipe in lightbox (unified via Pointer Events)
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const minSwipeDistance = 50;
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    setTouchEnd(null);
+    setTouchStart(e.clientX);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (touchStart !== null) {
+      setTouchEnd(e.clientX);
+    }
+  };
+
+  const handlePointerUp = () => {
+    if (touchStart === null || touchEnd === null) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      setSelectedIndex((i) => (i === null ? 0 : (i + 1) % photos.length));
+    } else if (isRightSwipe) {
+      setSelectedIndex((i) => (i === null ? 0 : (i - 1 + photos.length) % photos.length));
+    }
+
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
+
   const photos = weddingData.album;
   const displayedPhotos = showAll ? photos : photos.slice(0, INITIAL_VISIBLE);
   const hasMore = photos.length > INITIAL_VISIBLE;
@@ -223,8 +256,14 @@ export function GallerySection({ className }: GallerySectionProps) {
             </div>
 
             {/* Image frame */}
-            <div className="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-white/10 bg-[rgba(255,250,244,0.04)]">
-              <div className="relative aspect-[3/4] w-full max-h-[68vh] sm:max-h-[75vh] mx-auto">
+            <div
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onPointerCancel={() => { setTouchStart(null); setTouchEnd(null); }}
+              className="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-white/10 bg-[rgba(255,250,244,0.04)] cursor-grab active:cursor-grabbing select-none touch-none"
+            >
+              <div className="relative aspect-[3/4] w-full max-h-[68vh] sm:max-h-[75vh] mx-auto pointer-events-none select-none">
                 <SafeGalleryImage
                   src={selectedPhoto.src}
                   alt={selectedPhoto.alt}
